@@ -1987,7 +1987,10 @@ main.persona-transition { opacity: 0; transition: opacity 0.25s ease; }
     padding-top: 0;
   }
   .hero__cta { order: 4; margin-top: 0; text-align: center; }
-  .hero__graphic-tri { width: 79vw; height: 77vw; top: -18vw; right: 0vw; }
+  /* rightをマイナスにしてボックスごと右へずらすと画面右端をはみ出してしまうため、
+     ボックス位置は動かさず、clip-pathの頂点だけをボックスの外側（140%）まで
+     伸ばして右上の隙間を埋める */
+  .hero__graphic-tri { width: 79vw; height: 77vw; top: -18vw; right: 0vw; clip-path: polygon(140% 0, 200% 79%, 17% 100%); }
   .hero__graphic-blob { width: 20vw; height: 20vw; right: 41vw; top: 40vw; bottom: auto; }
   .hero__device { width: 66vw; max-width: 66vw; }
   /* スマホでは上下の余白が間延びして見えるため、セクションごとにかなり詰める */
