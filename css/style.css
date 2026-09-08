@@ -74,6 +74,9 @@ h1, h2, h3, p { margin: 0; }
 .section-heading br:first-of-type { display: none; }
 
 .btn {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   display: inline-flex;
   align-items: center;
   gap: 0.5em;
@@ -82,13 +85,38 @@ h1, h2, h3, p { margin: 0; }
   font-weight: 700;
   font-size: 0.95rem;
   border: 2px solid transparent;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
 }
+/* hover色は背景色の切り替えではなく、::beforeを左からスライドインさせて表現する
+   （isolation:isolateでスタッキングコンテキストを作り、z-index:-1のこの疑似要素を
+   .btnの通常コンテンツ（無指定=auto）より必ず下に固定している） */
+.btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  transform: translateX(-100%);
+  transition: transform 0.35s cubic-bezier(0.65, 0, 0.35, 1);
+}
+.btn:hover::before { transform: translateX(0); }
 .btn--primary { background: var(--yellow); color: var(--ink); }
-.btn--primary:hover { background: var(--yellow-deep); transform: translateY(-2px); box-shadow: 0 10px 20px rgba(201, 196, 0, 0.35); }
+.btn--primary::before { background: var(--yellow-deep); }
+.btn--primary:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(201, 196, 0, 0.35); }
 .btn--outline { background: var(--white); color: var(--ink); border-color: rgba(28, 28, 28, 0.12); box-shadow: var(--shadow-card); }
-.btn--outline:hover { background: var(--paper-dim); transform: translateY(-2px); }
+.btn--outline::before { background: var(--paper-dim); }
+.btn--outline:hover { transform: translateY(-2px); }
 .btn--small { padding: 0.6em 1.3em; font-size: 0.85rem; }
+/* 背景の三角デコ（.deco--tri-yellow）と同じ「正三角形ではないくさび形」をボタンの矢印として再利用 */
+.btn__arrow {
+  display: inline-block;
+  width: 0.6em;
+  height: 0.85em;
+  flex-shrink: 0;
+  background: currentColor;
+  clip-path: polygon(0 0, 100% 44%, 0 100%);
+  transition: transform 0.25s ease;
+}
+.btn:hover .btn__arrow { transform: translateX(3px); }
 
 /* section-label（番号＋eyebrow＋見出し） */
 .section-label {
