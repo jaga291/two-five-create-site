@@ -1,0 +1,2150 @@
+/* ==========================================================================
+   Two Five create — base / tokens
+   ========================================================================== */
+:root {
+  --ink: #1c1c1c;
+  --paper: #f7f5ef;
+  --paper-dim: #efece3;
+  --yellow: #c9c400;
+  --yellow-deep: #a8a300;
+  --blue: #00c9b2;
+  --pink: #e23292;
+  --white: #ffffff;
+  --accent: #2e2e2e; /* persona差分：bizCompany/partner共通、aiOpsのみJSで上書き */
+  --font-jp: "Noto Sans JP", "Hiragino Kaku Gothic ProN", sans-serif;
+  --font-display: "Archivo Black", var(--font-jp), sans-serif;
+  --font-tagline: "Barlow Condensed", var(--font-jp), sans-serif;
+  --header-h: 76px;
+  --shadow-card: 0 12px 30px rgba(28, 28, 28, 0.08);
+}
+
+* { box-sizing: border-box; }
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: var(--header-h);
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+body {
+  margin: 0;
+  overflow-x: hidden;
+  font-family: var(--font-jp);
+  color: var(--ink);
+  background: var(--paper);
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+}
+img, svg { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; cursor: pointer; }
+ul { margin: 0; padding: 0; list-style: none; }
+h1, h2, h3, p { margin: 0; }
+
+/* 視覚的には隠すが支援技術には読み上げさせるテキスト（別タブで開く旨の注記などに使う） */
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.eyebrow {
+  display: inline-block;
+  font-family: var(--font-tagline);
+  font-style: italic;
+  font-weight: 300;
+  font-size: 1.15rem;
+  letter-spacing: 0.14em;
+  color: var(--accent);
+  margin-bottom: 0.5em;
+}
+.eyebrow--center { display: block; text-align: center; }
+.section-heading {
+  font-size: clamp(1.5rem, 3vw, 2.1rem);
+  font-weight: 700;
+  line-height: 1.5;
+}
+.section-heading--center { text-align: center; }
+/* 1つ目の<br>はスマホ専用の改行（「Webの悩み」を　の直後）。PCでは非表示にして元の2行のまま維持する */
+.section-heading br:first-of-type { display: none; }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.85em 1.7em;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  border: 2px solid transparent;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+}
+.btn--primary { background: var(--yellow); color: var(--ink); }
+.btn--primary:hover { background: var(--yellow-deep); transform: translateY(-2px); box-shadow: 0 10px 20px rgba(201, 196, 0, 0.35); }
+.btn--outline { background: var(--white); color: var(--ink); border-color: rgba(28, 28, 28, 0.12); box-shadow: var(--shadow-card); }
+.btn--outline:hover { background: var(--paper-dim); transform: translateY(-2px); }
+.btn--small { padding: 0.6em 1.3em; font-size: 0.85rem; }
+
+/* section-label（番号＋eyebrow＋見出し） */
+.section-label {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 2.5rem;
+}
+.section-label__row {
+  display: flex;
+  align-items: baseline;
+  gap: 1.6rem;
+}
+.section-label__num {
+  font-family: var(--font-tagline);
+  font-style: italic;
+  font-weight: 300;
+  font-size: clamp(2.4rem, 8.8vw, 5.6rem);
+  color: var(--ink);
+  line-height: 1;
+}
+.section-label__heading {
+  margin-top: 0;
+  font-size: clamp(1.4rem, 4.5vw, 3rem);
+  font-weight: 700;
+}
+
+/* ==========================================================================
+   背景装飾（deco）— Hero/Whyのモチーフをサイト共通コンポーネント化したもの
+   ・モチーフは「黄色の三角」「黒の三角」「ティールの円」「黄色の円」「ドット」「クロス」の6種のみ
+   ・画面幅いっぱいに使うため、位置指定は calc(50% - 50vw) 基準で親のmax-widthを飛び越えて画面端に届かせる
+   ・すべて pointer-events: none。本文側は position:relative + z-index:1 で必ず上に載せる
+   ・重なり順は 円(0) < 三角(1) < クロス/ドット(2)。円と三角が重なる場合は必ず円が下
+   ========================================================================== */
+.deco {
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+}
+/* 三角は直角二等辺にしない。3つ目の頂点を必ず「縦中央より下」に置いてくさび形にすることで、
+   斜辺が下方向へ流れ、次のコンテンツへ視線を誘導する（Hero:48% / Why:81% と同じ考え方）。
+   実際の頂点位置と大きさは各セクション側で変え、単調にならないようバリエーションを付ける */
+.deco--tri-yellow {
+  background: var(--yellow);
+  clip-path: polygon(0 0, 100% 44%, 0 100%);
+}
+.deco--tri-ink {
+  background: var(--ink);
+  clip-path: polygon(100% 0, 100% 100%, 0 62%);
+}
+.deco--circle-blue { background: var(--blue); border-radius: 50%; }
+.deco--circle-yellow { background: var(--yellow); border-radius: 50%; }
+
+/* 重なり順のルール：円と三角が重なる場合は必ず「円が下・三角が上」。
+   HTMLの記述順に左右されないよう z-index で固定する。
+   本文（z-index:1）は装飾より後ろのDOMに置かれるため、三角と同値でも常に本文が上に来る */
+.deco--circle-blue, .deco--circle-yellow { z-index: 0; }
+.deco--tri-yellow, .deco--tri-ink { z-index: 1; }
+.deco--dots {
+  background-image: radial-gradient(var(--ink) 1.5px, transparent 1.5px);
+  background-size: 14px 14px;
+  opacity: 0.2;
+}
+.deco--dots-yellow {
+  background-image: radial-gradient(var(--yellow-deep) 1.5px, transparent 1.5px);
+  background-size: 14px 14px;
+  opacity: 0.5;
+}
+/* クロスはHeroの十字（7vw / 最大118px・線幅2px・yellow-deep・薄い不透明度）と同一仕様。
+   線幅は固定2pxなので、十字が小さいほど線が相対的に太く見える。
+   Heroと同じ「細い線」に見せるにはサイズもHeroに揃える必要がある */
+.deco--cross {
+  width: 7vw; height: 7vw;
+  max-width: 118px; max-height: 118px;
+  opacity: 0.3;
+  z-index: 2;
+}
+/* Heroの下側の十字（5.5vw / 最大92px）に相当する小さめバリエーション */
+.deco--cross--sm {
+  width: 5.5vw; height: 5.5vw;
+  max-width: 92px; max-height: 92px;
+  opacity: 0.4;
+}
+.deco--cross::before, .deco--cross::after {
+  content: "";
+  position: absolute;
+  background: var(--yellow-deep);
+}
+.deco--cross::before { top: 0; left: 50%; width: 2px; height: 100%; transform: translateX(-50%); }
+.deco--cross::after { top: 50%; left: 0; width: 100%; height: 2px; transform: translateY(-50%); }
+
+/* ==========================================================================
+   Header / Nav
+   ========================================================================== */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 110;
+  height: var(--header-h);
+  background: rgba(247, 245, 239, 0.94);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid rgba(28, 28, 28, 0.08);
+}
+.site-header__inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  height: 100%;
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 2rem;
+}
+.site-header__brand { display: flex; align-items: center; gap: 0.8rem; }
+.site-logo { display: flex; align-items: center; }
+.site-logo__img { height: 34px; width: auto; display: block; }
+.site-footer .site-logo__img { height: 30px; }
+/* 縦積みロゴはアイコン+2行のテキストを含むぶん横並び版より縦に長いので、
+   同じ30pxだと潰れて読めなくなる。専用に高さを大きく取る */
+.site-footer .site-logo--stacked .site-logo__img { height: 78px; }
+
+.persona-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 0.35em 0.9em;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--white);
+}
+
+/* デスクトップ用ホバーフライアウトメニュー：ハンバーガーにマウスオーバーすると右側から縦並びのメニューが現れる */
+.nav-flyout { position: relative; height: 100%; display: flex; align-items: center; }
+.nav-flyout-toggle {
+  position: relative;
+  width: 40px; height: 40px;
+  border: none;
+  background: transparent;
+}
+.nav-flyout-toggle span {
+  position: absolute;
+  left: 8px;
+  width: 24px; height: 2px;
+  background: var(--ink);
+  transition: background-color 0.25s ease, transform 0.25s ease;
+}
+.nav-flyout-toggle span:nth-child(1) { top: 13px; }
+.nav-flyout-toggle span:nth-child(2) { top: 19px; width: 18px; }
+.nav-flyout-toggle span:nth-child(3) { top: 25px; }
+.nav-flyout:hover .nav-flyout-toggle span,
+.nav-flyout:focus-within .nav-flyout-toggle span {
+  background: var(--yellow-deep);
+}
+.nav-flyout:hover .nav-flyout-toggle span:nth-child(2),
+.nav-flyout:focus-within .nav-flyout-toggle span:nth-child(2) {
+  width: 24px;
+}
+
+.site-nav {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  min-width: 230px;
+  background: var(--paper);
+  border-radius: 0 0 0 18px;
+  box-shadow: var(--shadow-card);
+  padding: 0.6rem 0;
+  opacity: 0;
+  transform: translateX(28px);
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.nav-flyout:hover .site-nav,
+.nav-flyout:focus-within .site-nav {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: auto;
+}
+.site-nav a {
+  position: relative;
+  display: block;
+  padding: 0.85rem 1.8rem;
+  font-size: 0.92rem;
+  font-weight: 500;
+  transition: color 0.25s ease, background-color 0.25s ease;
+}
+.site-nav a::after {
+  content: "";
+  position: absolute;
+  left: 1.8rem; bottom: 0.6rem;
+  width: 0; height: 2px;
+  background: var(--yellow-deep);
+  transition: width 0.3s ease;
+}
+.site-nav a:hover { color: var(--yellow-deep); background: rgba(28, 28, 28, 0.04); }
+.site-nav a:hover::after { width: calc(100% - 3.6rem); }
+.site-nav__action {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 0.85rem 1.8rem;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--ink);
+  background: transparent;
+  border: none;
+  border-top: 1px solid rgba(28, 28, 28, 0.08);
+  margin-top: 0.4rem;
+  transition: color 0.25s ease, background-color 0.25s ease;
+}
+.site-nav__action:hover { color: var(--yellow-deep); background: rgba(28, 28, 28, 0.04); }
+
+/* 常時表示メニューは、5項目+「表示を切り替える」+お問い合わせボタンが1行に収まる
+   実測の最小幅（1100〜1150pxで折り返しが発生）を踏まえて1180px以上に限定する。
+   861〜1179pxは今までどおりホバーで開くフライアウトのまま（折り返し・オーバーフロー対策）。
+   スマホ側（.drawer / .nav-toggle）は一切変更しない */
+@media (min-width: 1180px) {
+  .nav-flyout-toggle { display: none; }
+  .site-nav {
+    position: static;
+    flex-direction: row;
+    align-items: center;
+    min-width: 0;
+    background: transparent;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0;
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+    transition: none;
+  }
+  .site-nav a { padding: 0.5rem 0.85rem; font-size: 0.88rem; }
+  .site-nav a::after { left: 0.85rem; }
+  .site-nav a:hover::after { width: calc(100% - 1.7rem); }
+  .site-nav__action {
+    display: block;
+    width: auto;
+    padding: 0.5rem 0.85rem;
+    border-top: none;
+    margin-top: 0;
+    margin-left: 0.4rem;
+  }
+  /* スクロール連動で現在地セクションに付くマーカー（main.jsのIntersectionObserverが.is-activeを切り替える） */
+  .site-nav a.is-active { color: var(--yellow-deep); }
+  .site-nav a.is-active::after { width: calc(100% - 1.7rem); }
+}
+
+.site-header__actions { display: flex; align-items: center; gap: 2rem; margin-left: auto; }
+
+.nav-toggle {
+  display: none;
+  position: relative;
+  width: 40px; height: 40px;
+  border: none;
+  background: transparent;
+  z-index: 120;
+}
+.nav-toggle span {
+  position: absolute;
+  left: 8px;
+  width: 24px; height: 2px;
+  background: var(--ink);
+  transition: transform 0.3s ease, opacity 0.3s ease, top 0.3s ease;
+}
+.nav-toggle span:nth-child(1) { top: 13px; }
+.nav-toggle span:nth-child(2) { top: 19px; }
+.nav-toggle span:nth-child(3) { top: 25px; }
+.nav-toggle[aria-expanded="true"] span:nth-child(1) { top: 19px; transform: rotate(45deg); }
+.nav-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+.nav-toggle[aria-expanded="true"] span:nth-child(3) { top: 19px; transform: rotate(-45deg); }
+
+/* Drawer */
+.drawer-overlay {
+  position: fixed; inset: 0;
+  background: rgba(20, 20, 20, 0.55);
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 90;
+}
+.drawer-overlay.is-open { opacity: 1; pointer-events: auto; }
+.drawer {
+  position: fixed;
+  top: 0; right: 0;
+  width: min(320px, 84vw);
+  height: 100vh;
+  background: var(--ink);
+  color: var(--white);
+  padding: calc(var(--header-h) + 1.5rem) 1.8rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+  transform: translateX(100%);
+  transition: transform 0.45s cubic-bezier(0.32, 0.72, 0, 1);
+  z-index: 100;
+}
+.drawer.is-open { transform: translateX(0); }
+.drawer a { font-size: 1rem; font-weight: 500; }
+.drawer .btn { width: fit-content; }
+.drawer__persona-switch {
+  margin-top: auto;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: var(--white);
+  padding: 0.8em 1.4em;
+  border-radius: 999px;
+}
+
+/* Floating buttons */
+.back-to-top {
+  position: fixed;
+  right: 1.5rem;
+  bottom: 1.5rem;
+  width: 48px; height: 48px;
+  padding: 0;
+  border-radius: 999px;
+  border: none;
+  z-index: 70;
+  box-shadow: var(--shadow-card);
+  transition: transform 0.25s ease, opacity 0.25s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--yellow);
+  color: var(--ink);
+  opacity: 0;
+  pointer-events: none;
+}
+.back-to-top.is-visible { opacity: 1; pointer-events: auto; }
+.back-to-top:hover { transform: translateY(-3px); }
+.back-to-top svg { width: 20px; height: 20px; }
+
+/* ==========================================================================
+   Persona modal
+   ========================================================================== */
+.persona-modal {
+  position: fixed; inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: rgba(20, 20, 20, 0.6);
+}
+.persona-modal[hidden] { display: none; }
+.persona-modal__panel {
+  position: relative;
+  width: min(560px, 100%);
+  background: var(--paper);
+  border-radius: 20px;
+  padding: 2.4rem 2rem;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.35);
+}
+.persona-modal__close {
+  position: absolute;
+  top: 1rem; right: 1rem;
+  width: 36px; height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ink);
+  transition: background-color 0.2s ease;
+}
+.persona-modal__close svg { width: 18px; height: 18px; }
+.persona-modal__close:hover, .persona-modal__close:focus-visible {
+  background: rgba(28, 28, 28, 0.08);
+}
+.persona-modal__eyebrow {
+  font-family: var(--font-tagline);
+  font-style: italic;
+  font-weight: 300;
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  color: var(--yellow-deep);
+  margin-bottom: 0.6rem;
+  display: block;
+}
+.persona-modal__panel h2 { font-size: 1.4rem; line-height: 1.5; margin-bottom: 1.6rem; }
+.persona-modal__options { display: flex; flex-direction: column; gap: 0.8rem; }
+.persona-modal__option {
+  text-align: left;
+  background: var(--white);
+  border: 2px solid transparent;
+  border-radius: 14px;
+  padding: 1rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+.persona-modal__option:hover, .persona-modal__option:focus-visible {
+  border-color: var(--yellow);
+  transform: translateY(-2px);
+}
+.persona-modal__option-label { font-weight: 700; font-size: 0.98rem; }
+.persona-modal__option-sub { font-size: 1rem; color: #5c5c5c; }
+.persona-modal__skip {
+  display: block;
+  margin: 1.4rem auto 0;
+  background: none;
+  border: none;
+  font-size: 0.82rem;
+  color: #6b6b6b;
+  text-decoration: underline;
+}
+
+/* ==========================================================================
+   Hero
+   ========================================================================== */
+.hero {
+  position: relative;
+  padding: 3.2rem 0 2rem;
+}
+.hero__shape-yellow {
+  position: absolute;
+  top: 0; left: 0;
+  width: 30vw; height: 30vw;
+  max-width: 420px; max-height: 420px;
+  background: var(--yellow);
+  clip-path: polygon(0 0, 40% 48%, 0 100%);
+  z-index: 0;
+}
+.hero__dots {
+  position: absolute;
+  top: 13%; right: 14%;
+  width: 110px; height: 110px;
+  background-image: radial-gradient(var(--ink) 1.5px, transparent 1.5px);
+  background-size: 14px 14px;
+  opacity: 0.65;
+}
+.hero__dots--bottom { top: 38%; left: 3%; right: auto; width: 90px; height: 90px; }
+.hero__cross {
+  position: absolute;
+  z-index: 3;
+  width: 5vw;
+  height: 5vw;
+  max-width: 118px;
+  max-height: 118px;
+  opacity: 0.85;
+}
+.hero__cross::before,
+.hero__cross::after {
+  content: "";
+  position: absolute;
+  background: var(--yellow-deep);
+}
+.hero__cross::before {
+  top: 0;
+  left: 50%;
+  width: 1px;
+  height: 100%;
+  transform: translateX(-50%);
+}
+.hero__cross::after {
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  transform: translateY(-50%);
+}
+.hero__cross--top { top: 3%; right: 3%; opacity: 0.2; }
+.hero__cross--bottom { top: 75%; left: 1%; width: 5.5vw; height: 5.5vw; max-width: 92px; max-height: 92px; opacity: 0.4; }
+
+.hero__inner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: none;
+  margin: 0 auto;
+  /* 右は最小限のパディングにして、デバイスを画面端近くまで届かせる
+     （0にするとスマホの角が画面の縁に触れて事故に見えるので、わずかに逃がす） */
+  padding: 0 1.5vw 0 6vw;
+  display: grid;
+  /* テキスト側は「ARCHITECTURE FOR」が1行に収まる幅が下限。それを確保したうえで
+     残りをすべてデバイスに割り当てる。
+     注意：vwはスクロールバー幅を含むため、実ブラウザの列幅は計算値より約15px狭くなる。
+     比率を決めるときは必ずその分を引いて検算すること（詳細は .hero__tagline のコメント） */
+  grid-template-columns: minmax(0, 0.64fr) minmax(0, 0.5fr);
+  gap: 1rem 2vw;
+  align-items: start;
+}
+.hero__text { position: relative; z-index: 2; }
+.hero__tagline {
+  font-family: var(--font-tagline);
+  font-style: italic;
+  font-weight: 300;
+  /* 1行目「ARCHITECTURE FOR」は6.43em。これがテキスト列に収まる必要がある。
+     vwはスクロールバー幅（Windowsで約17px）を含むので、実際の列幅はvw計算値より狭い。
+     それを差し引いた実測上の許容値は最小幅帯(981px)で7.75vw。4%の余裕を見て7.45vwとする
+     （7.6vwだと実ブラウザでは「FOR」が段落ちして3行になる） */
+  font-size: 7.45vw;
+  letter-spacing: 0.01em;
+  line-height: 1.12;
+  color: var(--ink);
+  margin: 0 0 3.6rem;
+}
+.hero__headline {
+  /* 2カラム時のテキスト欄はビューポート幅の約49.4%。h1の1行目はその幅に収まる必要がある。
+     実測では 2.434vw が限界なので、2%の余裕を見て 2.38vw とする
+     （これを超えると1024〜1366px帯で1行目がはみ出し、意図しない3行になる）。
+     1445px以上では上限2.15remで頭打ちになるので、デスクトップの見え方は変わらない */
+  font-size: clamp(1.5rem, 2.38vw, 2.15rem);
+  font-weight: 700;
+  line-height: 1.55;
+  margin-bottom: 1.1rem;
+}
+/* 2カラムの下限帯だけは、clampの最小値1.5rem(24px)がテキスト欄の幅を超えてしまい
+   1行目が折り返る。1カラムになる980px以下では最小値が必要なので、この帯だけ外す */
+@media (min-width: 981px) and (max-width: 1010px) {
+  .hero__headline { font-size: 2.38vw; }
+}
+.hero__cta { margin-top: 3rem; }
+
+.hero__graphic {
+  position: relative;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 320px;
+  padding-top: 87px;
+}
+.hero__graphic-blob {
+  position: absolute;
+  width: 22vw; height: 22vw;
+  right: 53%; bottom: -20%;
+  background: var(--blue);
+  border-radius: 50%;
+}
+.hero__graphic-tri {
+  position: absolute;
+  width: 48vw; height: 46vw;
+  top: -10%; right: -6%;
+  background: var(--ink);
+      clip-path: polygon(116% 0, 200% 82%, 8% 100%);
+  z-index: 0;
+}
+.hero__device {
+  position: relative;
+  z-index: 2;
+  /* 画像の透明余白を切り落としてあるので、列幅いっぱい＝機器の実サイズになる。
+     画面オーバーレイの倍率はこの実寸から算出される（js/main.js） */
+  width: 100%;
+}
+/* 元画像に焼き込まれたダミー画面を完全に覆う必要があるため、背景は不透明の白 */
+.fv-device { width: 100%; height: 100%; background: #fff; }
+
+/* --- デバイス本体は元画像のまま。画面部分だけをSVGで覆う --- */
+.hero__device-photo { width: 100%; height: auto; }
+.hero__device-screen {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 0 0;
+  /* JSが寸法とmatrix3dを算出するまでは出さない（一瞬だけ左上にズレて見えるのを防ぐ）。
+     JS無効時はこのまま非表示になり、元画像の画面がそのまま見える */
+  visibility: hidden;
+}
+.hero__device-screen.is-ready { visibility: visible; }
+/* モニターの画面はスマホの手前ではなく奥にあるので、スマホと重なる部分は描かない。
+   切り欠かないと、四角いオーバーレイがスマホの左側の縁を塗りつぶして消してしまう。
+   形状はスマホ本体の外形（画面＋ベゼル6px、角丸41px）を射影変換でモニターの
+   ローカル座標に写して算出した固定値。%指定なので表示サイズが変わっても追随する。
+   算出条件を変えたときは js/main.js の FV_PHONE_QUAD / FV_SCREEN_QUAD から再計算すること */
+.hero__device-screen--monitor {
+  clip-path: polygon(0% 0%, 100% 0%, 100% 51.74%, 97.45% 51.6%, 97.02% 51.61%, 96.6% 51.71%, 96.18% 51.88%, 95.77% 52.13%, 95.37% 52.45%, 95% 52.84%, 94.65% 53.3%, 94.33% 53.81%, 94.05% 54.38%, 93.81% 54.98%, 93.6% 55.63%, 93.44% 56.31%, 93.33% 57%, 93.26% 57.71%, 90.6% 100%, 0% 100%);
+}
+/* スマホは画面が角丸なので、はみ出しをクリップする（半径はJSが実寸に合わせて入れる） */
+.hero__device-screen--phone { overflow: hidden; }
+/* スマホはロック画面のイメージ。黒背景に時刻とブランドのアイコンマークだけを置く */
+.fv-phone { width: 100%; height: 100%; background: #050505; }
+.fv-phone__island { fill: #000; }
+.fv-phone__home { fill: #fff; fill-opacity: 0.55; }
+.fv-phone__clock {
+  font-family: var(--font-jp);
+  font-weight: 700;
+  font-size: 82px;
+  letter-spacing: -0.01em;
+  fill: #fff;
+}
+
+/* --- 画面内で共通で使う塗り・線 --- */
+.fv-fill-ink { fill: var(--ink); }
+.fv-fill-soft { fill: var(--ink); fill-opacity: 0.07; }
+.fv-fill-yellow { fill: var(--yellow); }
+
+/* --- 画面内タイポグラフィ（既存フォントのみ使用） --- */
+.fv-key__word {
+  /* ヒーローのタグライン（ARCHITECTURE FOR DYNAMIC RESULTS）と同じ書体・字体で揃える。
+     画面内は実寸で約1/3に縮むため、300ではなく400にして視認性を確保している */
+  font-family: var(--font-tagline);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 148px;
+  letter-spacing: 0.08em;
+  fill: var(--ink);
+}
+/* キーワードの頭文字だけブランドのピンクでアクセントを付ける */
+.fv-key__initial { fill: var(--pink); }
+.fv-brand,
+.fv-sub,
+.fv-key__index {
+  font-family: var(--font-jp);
+  font-weight: 500;
+  fill: var(--ink);
+}
+.fv-brand { font-size: 20px; letter-spacing: 0.36em; fill-opacity: 0.4; }
+.fv-key__index { font-size: 22px; letter-spacing: 0.3em; fill-opacity: 0.5; }
+.fv-sub { font-size: 20px; letter-spacing: 0.26em; fill-opacity: 0.52; }
+
+.fv-cursor {
+  fill: var(--yellow-deep);
+  animation: fvCursorBlink 700ms steps(1, end) infinite;
+}
+@keyframes fvCursorBlink {
+  0%, 50% { opacity: 0.75; }
+  50.01%, 100% { opacity: 0.1; }
+}
+
+/* --- シーン切り替え ---
+   1シーンは「文字だけ(type) → 図形がバラバラに出現(shapes) → 消える(out)」の3フェーズ。
+   図形は data-scene と data-phase="shapes" の両方が一致したレイヤーだけが出現する。
+   --i は要素ごとの出現順で、間隔を広めに取ってゆっくりバラけて出るようにしている */
+.fv-layer > * {
+  opacity: 0;
+  transition:
+    opacity 0.9s ease,
+    transform 1.05s cubic-bezier(0.16, 0.86, 0.22, 1),
+    stroke-dashoffset 1.3s cubic-bezier(0.16, 0.86, 0.22, 1);
+  /* --i は図形ごとに固有（同じ値は無し）。260msずつずらすことで1つずつ順に現れる。
+     順番は画面上の位置が隣り合わないよう意図的に散らしてある（index.html側で指定） */
+  transition-delay: calc(var(--i, 0) * 260ms);
+}
+.fv-draw {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 2.4;
+  /* pathLength="1" を併用しているので、実長に関係なく 1→0 で線を引ける */
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+.fv-hair { stroke-width: 1.6; stroke-opacity: 0.3; }
+.fv-frame > rect { stroke-width: 1.6; }
+.fv-node { fill: var(--ink); transform: scale(0); transform-box: fill-box; transform-origin: center; }
+.fv-slide { transform: translateX(26px); transform-box: fill-box; }
+.fv-pop { transform: scale(0.6); transform-box: fill-box; transform-origin: center; }
+.fv-snap { transform: scaleY(0); transform-box: fill-box; transform-origin: top; }
+.fv-ring {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 2.4;
+  stroke-opacity: 0.5;
+  transform: scale(0.35);
+  transform-box: fill-box;
+  transform-origin: center;
+}
+/* 色のバリエーション。.fv-draw / .fv-ring の stroke を上書きするので、必ずそれらより後に置く */
+.fv-stroke-blue { stroke: var(--blue); stroke-width: 3; stroke-opacity: 1; fill: none; }
+.fv-accent { stroke: var(--yellow-deep); }
+
+.fv-device[data-scene="strategy"][data-phase="shapes"] .fv-l--strategy > *,
+.fv-device[data-scene="design"][data-phase="shapes"] .fv-l--design > *,
+.fv-device[data-scene="build"][data-phase="shapes"] .fv-l--build > *,
+.fv-device[data-scene="growth"][data-phase="shapes"] .fv-l--growth > * {
+  opacity: 1;
+  transform: none;
+  stroke-dashoffset: 0;
+}
+
+/* --- 退場フェーズ：文字も図形も一斉に消す（出現時のような順番待ちはしない） --- */
+.fv-device[data-phase="out"] .fv-layer > * {
+  transition-delay: 0s;
+  transition-duration: 0.55s;
+}
+.fv-key { transition: opacity 0.55s ease; }
+.fv-device[data-phase="out"] .fv-key { opacity: 0; }
+
+/* --- 右上のシーンインジケーター --- */
+.fv-ticks > rect { fill: var(--ink); fill-opacity: 0.14; transition: fill-opacity 0.3s ease; }
+.fv-device[data-scene="strategy"] .fv-ticks > rect:nth-child(1),
+.fv-device[data-scene="design"] .fv-ticks > rect:nth-child(2),
+.fv-device[data-scene="build"] .fv-ticks > rect:nth-child(3),
+.fv-device[data-scene="growth"] .fv-ticks > rect:nth-child(4) { fill-opacity: 0.85; }
+
+@media (prefers-reduced-motion: reduce) {
+  /* 動きは止め、DESIGNシーンの完成形を静止画として見せる */
+  .fv-layer > *,
+  .fv-key,
+  .fv-ticks > rect { transition: none; }
+  .fv-cursor { animation: none; opacity: 0.45; }
+}
+
+/* ==========================================================================
+   Why
+   ========================================================================== */
+.why { position: relative; padding: 10rem 1.5rem; max-width: 1280px; margin: 0 auto; }
+
+/* 背景装飾：クロス・ドット・ブロブ・三角形（Heroと共通のモチーフ） */
+.why__cross {
+  position: absolute;
+  z-index: 2;
+  width: 4.5vw; height: 4.5vw;
+  max-width: 64px; max-height: 64px;
+}
+.why__cross::before, .why__cross::after {
+  content: "";
+  position: absolute;
+  background: var(--yellow-deep);
+}
+.why__cross::before { top: 0; left: 50%; width: 2px; height: 100%; transform: translateX(-50%); }
+.why__cross::after { top: 50%; left: 0; width: 100%; height: 2px; transform: translateY(-50%); }
+.why__cross--tl { top: 1.6rem; left: -5.2rem; opacity: 0.7; }
+.why__cross--br { bottom: -0.6rem; right: 0.5rem; opacity: 0.45; }
+
+.why__dots {
+  position: absolute;
+  width: 84px; height: 84px;
+  background-image: radial-gradient(var(--ink) 1.5px, transparent 1.5px);
+  background-size: 13px 13px;
+  opacity: 0.18;
+  z-index: 0;
+}
+.why__dots--tl { top: -1rem; left: 9.6rem; }
+.why__dots--br {
+  bottom: 3rem; right: 0.8rem;
+  opacity: 0.25;
+}
+
+.why__blob {
+  position: absolute;
+  top: -1.5rem; right: 24%;
+  width: 20vw; height: 20vw;
+  max-width: 280px; max-height: 280px;
+  background: var(--blue);
+  border-radius: 50%;
+  z-index: 0;
+}
+.why__tri { position: absolute; background: var(--ink); z-index: 1; }
+/* ページ全体の主役クラスタ交互配置（Profile=左→Why=右→Works=左→Flow=右→FAQ=左）の2番目＝右。
+   クラス名は旧来の--blのままだが、実際の配置は右下 */
+.why__tri--bl {
+  bottom: -13px; right: calc(50% - 50vw);
+  width: 26vw; height: 27vw;
+  max-width: 365px; max-height: 380px;
+  clip-path: polygon(100% 0, 100% 100%, 0 81%);
+}
+.why__triangle-accent {
+  position: absolute;
+  bottom: -3vw; right: calc(50% - 44vw);
+  width: 18vw; height: 18vw;
+  max-width: 250px; max-height: 250px;
+  border-radius: 50%;
+  background: var(--yellow);
+  z-index: 0;
+}
+
+.why__grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.6rem;
+}
+.why__card {
+  min-width: 0;
+  background: var(--white);
+  border-radius: 16px;
+  padding: 1.8rem 1.5rem 2rem;
+  box-shadow: var(--shadow-card);
+  position: relative;
+  /* 3枚横並びなので、カードの中身は縦積み（番号+タグ → イラスト → 見出し → 本文） */
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+.why__card-main { min-width: 0; }
+.why__card-head { display: flex; align-items: baseline; gap: 0.6rem; margin-bottom: 0.7rem; }
+.why__num-big {
+  font-family: var(--font-tagline);
+  font-style: italic;
+  font-weight: 300;
+  font-size: 2rem;
+  line-height: 1;
+  color: var(--yellow-deep);
+}
+.why__slash {
+  display: inline-block;
+  width: 1px; height: 1.4rem;
+  background: var(--yellow-deep);
+  transform: rotate(20deg);
+}
+.why__tag {
+  font-family: var(--font-tagline);
+  font-style: italic;
+  font-size: 1.05rem;
+  letter-spacing: 0.04em;
+  color: #9a9a9a;
+}
+.why__title { font-weight: 700; font-size: 1.35rem; margin-bottom: 0.9rem; text-align: center; line-height: 1.55; }
+.why__desc { font-size: 1rem; color: #555; line-height: 1.85; }
+.why__illust {
+  position: relative;
+  min-width: 0;
+  aspect-ratio: 1 / 1;
+  max-width: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0.4rem auto 1.3rem;
+}
+.why__illust img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* ==========================================================================
+   Services
+   ========================================================================== */
+.services { position: relative; padding: 5rem 0 2rem; max-width: 1280px; margin: 0 auto; }
+.services > .section-label { padding: 0 1.5rem; }
+
+.service-rows {
+  position: relative;
+  width: 100vw;
+  left: 50%;
+  margin-left: -50vw;
+}
+.service-row {
+  display: grid;
+  grid-template-columns: 50% 50%;
+  align-items: stretch;
+  background: var(--white);
+  border-top: 1px solid rgba(28, 28, 28, 0.08);
+}
+/* 高さ固定だと中身が増えたときにはみ出すので、下限としてだけ効かせる */
+.service-rows .service-row:not(.service-row--pair):not(.service-row--quad) { min-height: 360px; }
+.service-rows .service-row:first-child { border-top: none; }
+.service-row--reverse { grid-template-columns: 50% 50%; }
+.service-row--reverse > .service-row__text { order: 2; }
+.service-row--reverse > .service-row__media { order: 1; }
+.service-row--reverse:not(.service-row--pair) > .service-row__media {
+  clip-path: polygon(0 0, 100% 0, 94% 100%, 0 100%);
+}
+.service-row:not(.service-row--reverse):not(.service-row--pair) > .service-row__media {
+  clip-path: polygon(6% 0, 100% 0, 100% 100%, 0 100%);
+}
+
+.service-row--pair { grid-template-columns: 1fr 1fr; }
+.service-row__col {
+  display: grid;
+  grid-template-columns: 55% 45%;
+  border-left: 1px solid rgba(28, 28, 28, 0.08);
+}
+.service-row__col:first-child { border-left: none; }
+.service-row__col--reverse { grid-template-columns: 45% 55%; }
+.service-row__col--reverse .service-row__text { order: 2; }
+.service-row__col--reverse .service-row__media { order: 1; }
+.service-row__col--reverse .service-row__media {
+  clip-path: polygon(0 0, 94% 0, 100% 100%, 0 100%);
+}
+
+.service-row--quad {
+  grid-template-columns: repeat(4, 1fr);
+  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url("../images/service06.jpg") center/cover no-repeat;
+}
+.service-row--quad .service-row__col--text-only {
+  display: block;
+  border-left: 1px solid rgba(255, 255, 255, 0.15);
+}
+.service-row--quad .service-row__col--text-only:first-child { border-left: none; }
+.service-row--quad .service-row__col--text-only .service-row__text {
+  padding: 2.4rem 2.4rem 3.6rem;
+  display: block;
+  text-align: center;
+}
+.service-row--quad .service__icon { margin-left: auto; margin-right: auto; }
+/* .service__headは通常アイコン＋タイトルの横並び用（flex）だが、
+   quadの通常表示はアイコン中央→タイトル中央の縦積みのまま維持したいので打ち消す。
+   横並びはスマホ時のみ下のmedia queryで再度有効化する */
+.service-row--quad .service__head { display: block; }
+.service-row--quad .service__title {
+  font-size: 1.4rem;
+  color: var(--white);
+  /* 1行の見出しと2行の見出しが混在すると、その下の本文の開始位置が段でずれる。
+     常に2行分の高さを確保し、その中で上下中央に置くことで4つの本文を揃える */
+  line-height: 1.75;
+  min-height: calc(1.75em * 2);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.service-row--quad .service__desc { color: rgba(255, 255, 255, 0.78); text-align: left; }
+/* 03〜06は写真の上に直接文字が乗るため、写真の明るい部分に重なると読みにくくなる。
+   広めのぼかしで文字の周囲だけをうっすら暗く落とし、輪郭用に弱い影を重ねて可読性を上げる。
+   01・02は白背景の上なので影は付けない（濁って見えるだけで効果がない） */
+.service-row--quad .service__title,
+.service-row--quad .service__desc {
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35), 0 0 14px rgba(0, 0, 0, 0.5);
+}
+.service-row--quad .service__icon img { filter: brightness(0) invert(1); }
+/* 暗い写真の上でも同じピンクで通す（大きい文字なのでコントラストは足りる） */
+.service-row--quad .service-row__num { color: var(--pink); }
+
+.service-row__text {
+  position: relative;
+  min-width: 0;
+  /* タグを足したぶん、下だけ厚めに取る */
+  padding: 1.8rem clamp(1.5rem, 5vw, 4rem) 3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.service-row > .service-row__text {
+  display: flex;
+  flex-direction: column;
+  row-gap: 1.5rem;
+}
+.service__head { display: flex; align-items: center; column-gap: 0.6rem; }
+.service__head .service__icon { margin-bottom: 0; }
+.service__head .service__title { margin-bottom: 0; }
+.service-row__col .service-row__text { padding: 2.5rem clamp(1.5rem, 3vw, 2.5rem) 3.4rem; }
+.service-row__media { position: relative; min-width: 0; overflow: hidden; min-height: 200px; }
+/* 画像を絶対配置にして、行の高さの計算から外す。
+   こうしないと高さ固定を外したときに画像の縦横比が行の高さを決めてしまい、
+   テキスト量と無関係に行が伸びる */
+.service-row__media img {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center;
+  display: block;
+}
+.service-row__col .service-row__media { min-height: 280px; clip-path: polygon(6% 0, 100% 0, 100% 100%, 0 100%); }
+
+.service-row__num {
+  position: absolute;
+  top: 2rem; right: 2rem;
+  font-family: var(--font-tagline);
+  font-style: italic;
+  font-weight: 300;
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1;
+  color: var(--pink);
+}
+.service__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px; height: 80px;
+  margin-bottom: 1rem;
+}
+.service__icon img { width: 100%; height: 100%; object-fit: contain; }
+.service__title { font-weight: 700; font-size: 1.8rem; margin-bottom: 1rem; }
+.service__desc { font-size: 1rem; color: #555; }
+/* サービスの守備範囲をひと目で示すキーワード。実績セクションのタグピルと同じ語彙で揃える。
+   文字サイズは0.875rem（14px）＝coding-notes標準仕様10で許容される下限 */
+.service__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1.1rem;
+}
+/* desc→tags間はrow-gap(1.5rem)がすでに効いているので、そのぶんだけ詰める。
+   ただし.service-row--quadはdisplay:blockでrow-gapが効いておらず、
+   同じ負のマージンだと本文とタグが重なってしまうため、下で正の値に上書きする */
+.service__desc + .service__tags { margin-top: -0.6rem; }
+.service-row--quad .service__desc + .service__tags { margin-top: 1rem; }
+.service__tag {
+  display: inline-flex;
+  align-items: center;
+  background: var(--white);
+  border: 1px solid rgba(28, 28, 28, 0.14);
+  border-radius: 999px;
+  padding: 0.42em 0.95em;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--ink);
+}
+/* 03〜06は暗い写真の上なので、白抜きの枠線タイプにする */
+.service-row--quad .service__tag {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.32);
+  color: var(--white);
+}
+
+/* ==========================================================================
+   Target message（分岐セクション）
+   ========================================================================== */
+.target { position: relative; overflow: hidden; background: var(--paper); }
+/* 十字はテキストの「+」ではなく共通の .deco--cross（=Hero相当の2px線）で描く。位置のみ指定 */
+.target__deco-cross { top: 2.5rem; right: calc(50% - 50vw + 1.5vw); }
+.target__inner {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 5rem 1.5rem;
+  text-align: center;
+}
+.target__cta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* 本文を廃したので、見出しとの間隔はここで確保する */
+  margin-top: 2.6rem;
+}
+
+/* ==========================================================================
+   Works
+   ========================================================================== */
+/* overflow:hidden を付けるとセクションの箱で装飾図形が断ち切られ、セクションの継ぎ目が線として見えてしまう。
+   はみ出しは body 側の overflow-x:hidden に任せ、図形が隣接セクションへ自然に流れ込むようにする */
+.works { position: relative; background: #f5f0ec; color: var(--ink); padding: 5rem 1.5rem 8rem; }
+
+/* 背景装飾：左側に統一（主役＝左上のティール円＋黒三角、副＝左下の黄三角＋黄円）。
+   三角形はページを下る視線誘導の役目があるため、Profile(左)→Why(右)→Works(左)→Flow(右)→FAQ(左)の
+   セクション単位の交互リズムを崩さないよう、Works内の副クラスタも主役と同じ左側に揃える。
+   見出し（左寄せ）と横並びにならないよう、見出しブロックの下から始める */
+/* 左上：横に広い大型くさび。右下へ長く伸びる斜辺で、そこからカードへ視線を落とす */
+.works__deco-tri-ink {
+  top: -21rem; left: calc(50% - 50vw);
+  width: 16vw; height: 18vw;
+  max-width: 520px; max-height: 400px;
+  clip-path: polygon(0 0, 0 100%, 100% 72%);
+}
+.works__deco-circle-blue {
+  top: -9rem; left: calc(50% - 50vw - 7vw);
+  width: 20vw; height: 20vw;
+  max-width: 300px; max-height: 300px;
+  opacity: 0.9;
+}
+/* 右下：主役（左上）とは対角の反対コーナーに副クラスタを添える。主役より一回り小さく */
+.works__deco-tri-yellow {
+  bottom: -10vw; right: calc(50% - 50vw);
+  width: 24vw; height: 19vw;
+  max-width: 340px; max-height: 270px;
+  clip-path: polygon(100% 0, 100% 100%, 0 82%);
+}
+.works__deco-dots-tr { top: 6rem; left: calc(50% - 50vw + 12vw); width: 130px; height: 110px; }
+.works__deco-dots-bl { bottom: 18vw; right: calc(50% - 50vw + 1rem); width: 110px; height: 100px; }
+/* 十字はサイズ・線幅・不透明度を .deco--cross（=Hero相当）に任せ、ここでは位置だけ指定する */
+.works__deco-cross-tr { top: 2.5rem; left: calc(50% - 50vw + 1.5vw); }
+.works__deco-cross-ml { top: 42%; right: calc(50% - 50vw + 1vw); }
+
+/* 導入部はグリッドをやめ、「見出し → ジャンル一覧の画像 → 文章」の縦積みに。
+   画像自体がジャンル・業種の一覧とコピーを兼ねるので、旧works__tag-cardは廃止した */
+.works__intro-grid {
+  position: relative;
+  z-index: 1;
+  max-width: 1280px;
+  margin: 0 auto 3.5rem;
+}
+/* 実績スクリーンショットを画面幅いっぱいの2段マルーキーで流し、コピーは
+   position:absoluteで独立させて中央に浮かせる。コピーの真下にも帯が通っているので、
+   半透明背景ごしにスクショが透けて見える。
+   ダミー画像なのでホバー停止は設けず流しっぱなしにする（prefers-reduced-motionのみ考慮）。
+   はみ出しは body 側の overflow-x:hidden に任せて画面端まで届かせる */
+.works__collage {
+  position: relative;
+  width: 100vw;
+  max-width: 100vw;
+  margin: 0 calc(50% - 50vw) 3.2rem;
+  padding: 2.4rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  /* トラックはwidth:max-contentで画面幅を大きく超えるため、body側のoverflow-x:hiddenだけに
+     頼らずこの箱自体でも切り取る（iOS Safariのラバーバンドスクロールでbody側だけだと
+     はみ出しが見えることがある） */
+  overflow: hidden;
+}
+.works__collage-copy {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 5;
+  width: min(90vw, 640px);
+  padding: 1.6em 2em;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.72);
+  -webkit-backdrop-filter: blur(10px) saturate(1.1);
+  backdrop-filter: blur(10px) saturate(1.1);
+  box-shadow: 0 20px 44px rgba(28, 28, 28, 0.18);
+  font-weight: 700;
+  font-size: clamp(1.6rem, 4vw, 2.6rem);
+  line-height: 1.6;
+  text-align: center;
+  color: var(--ink);
+}
+/* トラックは同じ6枚を2周ぶん並べたうえで-50%までtranslateXし、継ぎ目なくループさせる。
+   上段と下段で逆方向・少し違う速さにして機械的に揃いすぎないようにする */
+.works__collage-track {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  width: max-content;
+  list-style: none;
+  padding: 0.7rem 0;
+}
+.works__collage-row--top .works__collage-track { animation: worksMarqueeLeft 70s linear infinite; }
+.works__collage-row--bottom .works__collage-track { animation: worksMarqueeRight 80s linear infinite; }
+@keyframes worksMarqueeLeft { to { transform: translateX(-50%); } }
+@keyframes worksMarqueeRight { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+@media (prefers-reduced-motion: reduce) {
+  .works__collage-track { animation: none; }
+}
+/* aspect-ratio/object-fitで揃えると画像の端が切れるため、height基準・width:autoで全体を必ず表示する。
+   セルごとに回転・上下の自己整列をずらして「整列しすぎない」見た目にする */
+.works__collage-shot {
+  flex: 0 0 auto;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 10px 22px rgba(28, 28, 28, 0.16);
+}
+.works__collage-shot img { display: block; height: clamp(120px, 15vw, 210px); width: auto; }
+.works__collage-shot--a { align-self: flex-start; transform: rotate(-4deg); }
+.works__collage-shot--b { align-self: flex-end;   transform: rotate(3deg); }
+.works__collage-shot--c { align-self: flex-start; transform: rotate(-5deg); }
+.works__collage-shot--d { align-self: flex-end;   transform: rotate(4deg); }
+.works__collage-shot--e { align-self: flex-end;   transform: rotate(5deg); }
+.works__collage-shot--f { align-self: flex-start; transform: rotate(-4deg); }
+.works__collage-shot--g { align-self: flex-end;   transform: rotate(-3deg); }
+.works__collage-shot--h { align-self: flex-start; transform: rotate(4deg); }
+.works__collage-shot--i { align-self: flex-end;   transform: rotate(4deg); }
+.works__collage-shot--j { align-self: flex-start; transform: rotate(-3deg); }
+.works__collage-shot--k { align-self: flex-end;   transform: rotate(-5deg); }
+.works__collage-shot--l { align-self: flex-start; transform: rotate(3deg); }
+/* 画像の下に置くので、中央寄せの1カラムにして視線を集める */
+.works__col-text {
+  max-width: 760px;
+  margin: 0 auto;
+  text-align: center;
+}
+/* .works__col-text（読み物用の760px幅）より広げてPC時に2〜3段で収まるようにしたいので、
+   タグ群だけ.works__col-textの外に出して独立に幅を持たせる */
+.works__tags-wrap {
+  max-width: 760px;
+  margin: 0 auto 1.6rem;
+}
+@media (min-width: 981px) {
+  /* 1040px幅にすると1024〜1920pxの主要な画面幅でおおむね3段に収まる（実測で確認済み） */
+  .works__tags-wrap { max-width: 1040px; }
+}
+/* できるだけ多くのジャンルを並べたいので、標準仕様10の下限(0.875rem)まで詰めたピル */
+.works__tags {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0;
+  list-style: none;
+}
+/* 神社仏閣を次の行の先頭に固定するための強制改行用スペーサー（幅0の折り返し役） */
+.works__tags-break { flex-basis: 100%; height: 0; margin: 0; padding: 0; }
+.works__tag {
+  display: inline-flex;
+  align-items: center;
+  background: var(--white);
+  border: 1px solid rgba(28, 28, 28, 0.14);
+  border-radius: 999px;
+  padding: 0.32em 0.85em;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--ink);
+}
+.works__intro { color: #444; font-size: 1.2rem; }
+/* 「15年以上」のような数字＋単位が行をまたいで分断されるのを防ぐ */
+.nowrap { white-space: nowrap; }
+.works__divider { border: none; border-top: 1px solid rgba(28, 28, 28, 0.12); margin: 1.8rem auto; max-width: 480px; }
+.works__closing { font-weight: 700; font-size: 1.2rem; line-height: 1.8; color: var(--ink); margin-bottom: 1.6rem; }
+.works__cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.9em 1.8em;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  background: var(--yellow);
+  color: var(--ink);
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+.works__cta-btn:hover { background: var(--yellow-deep); transform: translateY(-2px); }
+
+.works__projects {
+  position: relative;
+  z-index: 1;
+  max-width: 1280px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 1.6rem;
+}
+/* セクション見出し（section-label__heading）ほどではないが、それに次ぐ大きさでOriginal Productsの塊を導入する */
+.works__projects-heading {
+  grid-column: 1 / -1;
+  font-size: clamp(1.4rem, 3vw, 1.9rem);
+  font-weight: 700;
+  color: var(--ink);
+}
+.work-project { min-width: 0; background: var(--white); border-radius: 20px; box-shadow: var(--shadow-card); }
+.work-project__label { display: block; color: var(--yellow-deep); font-weight: 700; font-size: 0.85rem; margin-bottom: 0.5rem; }
+.work-project__title { font-size: 1.8rem; font-weight: 800; margin-bottom: 0.9rem; }
+.work-project__desc { font-size: 1rem; color: #444; line-height: 1.85; }
+.work-project__desc + .work-project__desc { margin-top: 0.8rem; }
+
+.work-project__note {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  border: 1.5px solid var(--yellow);
+  border-radius: 12px;
+  padding: 0.9rem 1.2rem;
+  font-size: 0.92rem;
+  background: rgba(201, 196, 0, 0.07);
+  margin-top: 1.3rem;
+}
+
+/* ==========================================================================
+   work-project--twoface: sozai/products/twoface_camp.png のデザインを忠実に再現。
+   camp画像（1448px幅）をピクセル計測し、その座標をカード幅の1%=1cqwとして換算して配置。
+   container query units を使うことで、カードの実際の描画幅に対して常に同じ比率を保つ。
+   実際の紹介文はcampのダミーコピーより長いため、右の円＋モニターは絶対配置の装飾レイヤーとして
+   テキストの分量から独立させ、左のテキストは通常のフローで流し込む（文章が伸びても崩れない） */
+.work-project--twoface {
+  position: relative;
+  overflow: hidden;
+  container-type: inline-size;
+  background: #faf8f6;
+  /* padding はここに置かない：container-type を持つ要素自身のサイズが
+     cqw基準のpaddingに依存すると循環参照になり、cqwの計算結果が狂う。
+     余白は非grid経路（.work-project__body）側で確保する */
+  /* .works__projects は grid の初期値 align-items:stretch なので、
+     何もしないと隣の（現場の課題）カードの高さに引き伸ばされて下に空白ができる。
+     このカードは自分のコンテンツ量で高さを決めたいので、単体でstart指定して外す */
+  align-self: start;
+}
+/* 円は装飾としてカード全体の中央に絶対配置（テキスト量に関係なく常にカードの中心）。
+   モニターはテキストと同じflex行の一員にして、align-items:centerで縦中央揃えにする。
+   flexにしたことで、スマホでは.work-project__contentをcolumnに変えるだけで自然に縦積みできる */
+.work-project__tf-circle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 92%;
+  max-width: 92%;
+  width: auto;
+  z-index: 0;
+  pointer-events: none;
+}
+/* ラベル・ロゴ+吹き出しはcontentの外（.work-project__header）に置き、カード幅いっぱいの
+   通常フローとして表示する。content側はdesc/badges/ctaとモニターだけのflex行になる */
+.work-project--twoface .work-project__header {
+  position: relative;
+  z-index: 2;
+  padding: 6.5cqw 6.1cqw 0;
+  margin-bottom: 1.5cqw;
+}
+.work-project--twoface .work-project__content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: flex-start;
+  gap: 3cqw;
+  padding: 0 6.1cqw 0;
+}
+/* bodyは42cqwで固定（伸縮しない）。モニター側はimgの実ピクセルサイズ(1200px)がflex-basis:autoの
+   基準に使われて暴走しないよう、flex-basis:0で「残り幅を埋めるだけ」にする */
+.work-project--twoface .work-project__body { flex: 0 0 53cqw; max-width: 53cqw; }
+.work-project__tf-monitor-wrap { display: block; flex: 1 1 0%; min-width: 0; }
+.work-project__tf-monitor {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 18px 26px rgba(28, 28, 28, 0.18));
+}
+.work-project__brand-row { display: flex; align-items: center; gap: 1.4cqw; }
+.work-project__brand-logo { display: block; width: 37.5cqw; height: auto; }
+.work-project--twoface .work-project__label {
+  display: inline-block;
+  color: var(--ink);
+  font-weight: 800;
+  font-size: 2.1cqw;
+  margin-bottom: 0;
+}
+.work-project--twoface .work-project__title {
+  font-size: 4.7cqw;
+  font-weight: 900;
+  line-height: 1.4;
+  letter-spacing: -0.02em;
+  margin-bottom: 2.76cqw;
+  color: var(--ink);
+}
+/* cqwだけだとカード幅が狭い時（タブレット幅など）に最低限の可読サイズを割り込むため、
+   clampで0.95rem（旧スマホ対応と同じ値）を下限にする */
+.work-project--twoface .work-project__desc { font-size: clamp(0.95rem, 1.6cqw, 1.15rem); line-height: 1.8; color: #333; }
+.work-project__mark {
+  display: inline;
+  background: linear-gradient(transparent 58%, #ffc300 58%);
+  font-weight: 800;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+/* 3つのバッジをbody幅いっぱいに均等配置する。liをflex:1にして、imgはそのliの中で100%まで広げる */
+.work-project__badges {
+  display: flex;
+  align-items: center;
+  gap: 1cqw;
+  list-style: none;
+  margin-top: 0;
+  margin-bottom: 1cqw;
+}
+.work-project__badges li:not(.work-project__badge-divider) { flex: 1 1 0; }
+.work-project__badges img { display: block; width: 100%; height: auto; }
+.work-project__badge-divider { width: 1px; height: 6.5cqw; background: rgba(28, 28, 28, 0.14); flex-shrink: 0; }
+/* ロゴ横に一行だけ添える吹き出し。文字サイズ・font-weightは元の.work-project__note（0.92rem）を踏襲。
+   「しっぽ」は回転させた角丸スクエアで表現する定番手法（薄い三角より輪郭がはっきりして吹き出しらしく見える）。
+   noteにisolation:isolateで独立したスタッキングコンテキストを作り、しっぽ(z-index:-1)の右半分を
+   note自身の背景・枠線の下に隠すことで、左側だけ「つの」として見せている */
+.work-project--twoface .work-project__note {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0;
+  margin-left: 1.4rem;
+  border: 2px solid #ffc300;
+  border-radius: 18px;
+  background: #fff;
+  padding: 0.85rem 1.3rem;
+  font-size: 0.92rem;
+  font-weight: 700;
+  white-space: nowrap;
+  box-shadow: 0 6px 16px rgba(28, 28, 28, 0.1);
+}
+.work-project--twoface .work-project__note::after {
+  content: "";
+  position: absolute;
+  left: -8px;
+  top: 50%;
+  width: 18px;
+  height: 18px;
+  background: #fff;
+  border-left: 2px solid #ffc300;
+  border-bottom: 2px solid #ffc300;
+  border-radius: 0 0 0 5px;
+  transform: translateY(-50%) rotate(45deg);
+  z-index: -1;
+}
+/* content（body+モニターのflex行）の外に出し、カード全体の横幅の中で中央寄せにする */
+.work-project__cta {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  width: fit-content;
+  margin: 1.8cqw auto 6.5cqw;
+  align-items: center;
+  gap: 1cqw;
+  background: #111;
+  color: #fff;
+  font-weight: 700;
+  font-size: 2.3cqw;
+  padding: 1.7cqw 1.7cqw 1.7cqw 2.6cqw;
+  border-radius: 999px;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+.work-project__cta:hover { background: #000; transform: translateY(-2px); }
+.work-project__cta-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 4cqw;
+  height: 4cqw;
+  border-radius: 50%;
+  background: #ffc300;
+  color: #111;
+  font-size: 1.6cqw;
+  flex-shrink: 0;
+}
+
+.work-project--prompter { padding: 2rem; display: flex; flex-direction: column; }
+/* desc→showcase-copyを余白なしで一続きの文章のように詰める。画像との間隔だけ下に残す。
+   price文はshowcase-copyに合体済みなので、.work-project__priceは使用していない */
+.work-project__showcase { margin: 0 0 1.5rem; }
+.work-project__showcase-copy { font-weight: 700; font-size: 0.95rem; color: var(--ink); margin-bottom: 2rem; }
+.work-project__showcase-copy strong { font-weight: 900; }
+/* 「同じ高さ」と「行の横幅にぴったり埋まる」を両立させるjustified gallery方式。
+   pictureの高さは3枚とも固定し、liのflex-growに各画像の実際の縦横比(幅/高さ)を比率として
+   割り当てることで、横幅は自動的にその比率どおりに配分されて必ず行いっぱいになる。
+   img側はwidth/height100%+object-fit:containで、その配分された枠に収まる形になる
+   （比率どおりの枠なのでcontainでも実質フチが出ない＝トリミングもされない） */
+.work-project__showcase-list {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: nowrap;
+  gap: 0.6rem;
+  list-style: none;
+}
+.work-project__showcase-list li { display: flex; flex-basis: 0; flex-shrink: 1; flex-direction: column; align-items: center; gap: 0.4rem; min-width: 0; }
+.work-project__showcase-list li:nth-child(1) { flex-grow: 0.817; } /* 占いサイト 735:900 */
+.work-project__showcase-list li:nth-child(2) { flex-grow: 1.299; } /* プロンプター 965:743 */
+.work-project__showcase-list li:nth-child(3) { flex-grow: 0.595; } /* スマホアプリ 425:714 */
+.work-project__showcase-list picture {
+  display: block;
+  width: 100%;
+  height: 7.5rem;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(28, 28, 28, 0.1);
+  box-shadow: 0 6px 14px rgba(28, 28, 28, 0.14);
+}
+.work-project__showcase-list img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.work-project__showcase-list span { font-size: 0.72rem; font-weight: 600; color: #555; }
+
+/* ==========================================================================
+   Flow
+   ========================================================================== */
+/* overflow:hidden を使うと max-width:1280px の外側で装飾が切れてしまうため、
+   はみ出しは body 側の overflow-x:hidden に任せて画面端まで届かせる */
+/* 隣接セクションから流れ込む図形が見出しに達しないよう、継ぎ目側の余白を厚めに取る */
+.flow { position: relative; padding: 9rem 1.5rem 8rem; max-width: 1280px; margin: 0 auto; }
+
+/* 背景装飾：主役クラスタは左下（ティール円＋黒三角）。黄円の副アクセントは主役と同じ左下側に添える */
+/* 左下：Worksより縦長にして変化を付けた細身のくさび（角度はきつくしすぎない） */
+.flow__deco-tri-ink {
+  bottom: -3vw; left: calc(50% - 50vw);
+  width: 24vw; height: 28vw;
+  max-width: 340px; max-height: 400px;
+  clip-path: polygon(0 0, 0 100%, 100% 58%);
+}
+.flow__deco-circle-blue {
+  bottom: -5vw; left: calc(50% - 50vw - 2vw);
+  width: 16vw; height: 16vw;
+  max-width: 230px; max-height: 230px;
+  opacity: 0.9;
+}
+.flow__deco-circle-yellow {
+  bottom: -20vw; right: calc(50% - 50vw + 2vw);
+  width: 14vw; height: 14vw;
+  max-width: 200px; max-height: 200px;
+  opacity: 0.8;
+}
+.flow__deco-dots-tl { top: 1rem; left: calc(50% - 50vw + 22vw); width: 120px; height: 100px; }
+.flow__deco-dots-br { bottom: 6vw; right: calc(50% - 50vw + 10vw); width: 110px; height: 100px; opacity: 0.25; }
+.flow__deco-cross-l { top: 16rem; right: calc(50% - 50vw + 1.5vw); }
+.flow__deco-cross-br { bottom: 4rem; right: calc(50% - 50vw + 1.5vw); }
+.flow > .section-label { position: relative; z-index: 1; }
+.flow__intro { position: relative; z-index: 1; font-size: 1rem; color: #555; line-height: 1.8; margin: 0 0 4.6rem; }
+.flow__intro strong { font-weight: 800; color: var(--ink); }
+
+.flow__steps { position: relative; z-index: 1; }
+.flow__steps-track {
+  display: flex;
+  align-items: stretch;
+  gap: 1rem;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 1.2rem;
+  margin-bottom: -1.2rem;
+  cursor: grab;
+}
+.flow__steps-track::-webkit-scrollbar { height: 8px; }
+.flow__steps-track::-webkit-scrollbar-track { background: rgba(28, 28, 28, 0.07); border-radius: 999px; }
+.flow__steps-track::-webkit-scrollbar-thumb { background: var(--yellow); border-radius: 999px; }
+.flow__steps-track { scrollbar-width: thin; scrollbar-color: var(--yellow) rgba(28, 28, 28, 0.07); }
+.flow__steps-track.is-dragging {
+  cursor: grabbing;
+  scroll-snap-type: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.flow__steps-track.is-dragging img { pointer-events: none; }
+.flow__step-arrow { flex: 0 0 auto; align-self: center; color: var(--yellow); }
+.flow__step-arrow svg { width: 30px; height: 30px; }
+
+.flow__step-card {
+  position: relative;
+  flex: 0 0 300px;
+  scroll-snap-align: start;
+  min-width: 0;
+  /* 詳細を畳んだ状態でちょうど収まる高さ。開くとカードごと伸びる */
+  min-height: 380px;
+  display: flex;
+  flex-direction: column;
+  background: var(--white);
+  border-radius: 18px;
+  box-shadow: var(--shadow-card);
+  padding: 0.78rem 1.5rem 1.8rem;
+}
+.flow__step-head {
+  display: flex;
+  align-items: start;
+  min-height: 3rem;
+  padding-left: 4.8rem;
+  margin-bottom: 1rem;
+}
+.flow__step-num {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: var(--yellow);
+  color: var(--ink);
+  font-family: var(--font-tagline);
+  font-style: italic;
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: 0.03em;
+  padding: 0.5em 1.15em 0.5em 1rem;
+  border-radius: 18px 0 14px 0;
+  white-space: nowrap;
+}
+.flow__step-label { font-weight: 700; font-size: 1.1rem; line-height: 1.4; }
+.flow__step-illust { width: 100px; height: 100px; margin: 0 auto 1rem; }
+.flow__step-illust img { width: 100%; height: 100%; object-fit: contain; }
+.flow__step-headline { font-weight: 700; text-align: center; font-size: 1rem; line-height: 1.65; margin-bottom: 0.9rem; }
+/* 詳細テキストは既定で閉じておき、下向きのくの字（summary）をクリックでスライド表示する。
+   高さのアニメーションは js/main.js の toggleDetails が担当（coding-notes 標準仕様11） */
+.flow__step-detail { margin-bottom: 1.1rem; }
+.flow__step-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  height: 2.4rem;
+  cursor: pointer;
+  list-style: none;
+  color: var(--yellow-deep);
+  border-radius: 10px;
+  transition: background-color 0.2s ease;
+}
+.flow__step-toggle::-webkit-details-marker { display: none; }
+.flow__step-toggle:hover { background: rgba(201, 196, 0, 0.14); }
+.flow__step-toggle:focus-visible { outline: 2px solid var(--yellow-deep); outline-offset: 2px; }
+.flow__step-toggle-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.flow__step-toggle-label-close { display: none; }
+.flow__step-detail[open] .flow__step-toggle-label-open { display: none; }
+.flow__step-detail[open] .flow__step-toggle-label-close { display: inline; }
+/* 縦棒を90deg回転させて横棒に重ねることで「＋」→「−」に見せる */
+.flow__step-plusminus { position: relative; width: 18px; height: 18px; flex-shrink: 0; }
+.flow__step-plusminus::before,
+.flow__step-plusminus::after {
+  content: "";
+  position: absolute;
+  top: 50%; left: 50%;
+  background: currentColor;
+  border-radius: 2px;
+  transition: transform 0.3s ease;
+}
+.flow__step-plusminus::before { width: 100%; height: 1.4px; transform: translate(-50%, -50%); }
+.flow__step-plusminus::after { width: 1.4px; height: 100%; transform: translate(-50%, -50%); }
+.flow__step-detail[open] .flow__step-plusminus::after { transform: translate(-50%, -50%) rotate(90deg); }
+/* 閉じている間は高さ0。開くと height:auto に戻す（JS未実行時のフォールバック） */
+.flow__step-desc-wrap { height: 0; overflow: hidden; }
+.flow__step-detail[open] .flow__step-desc-wrap { height: auto; }
+.flow__step-desc { font-size: 1rem; color: #555; line-height: 1.75; padding-top: 0.5rem; }
+.flow__step-duration {
+  /* 詳細の開閉で高さが変わっても、常にカードの下端に置く */
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: 1.5px solid var(--yellow);
+  border-radius: 10px;
+  padding: 0.6rem 0.8rem;
+  font-size: 0.9rem;
+  color: var(--ink);
+}
+.flow__step-duration svg { width: 18px; height: 18px; flex-shrink: 0; color: var(--yellow-deep); }
+.flow__step-duration strong { font-weight: 800; }
+
+.flow__support { position: relative; z-index: 1; margin-top: 5.5rem; }
+.flow__support-head { display: flex; flex-direction: column; align-items: center; text-align: center; margin-bottom: 2rem; }
+.flow__support-heading { font-size: clamp(1.4rem, 3vw, 1.9rem); font-weight: 700; margin-top: 0.4rem; }
+.flow__support-num { font-family: var(--font-display); color: var(--yellow-deep); font-size: 1.3em; margin: 0 0.05em; }
+.flow__support-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.2rem; }
+/* カードの白背景は使わず、ページの地の色にそのまま乗せる（白背景カードが他セクションに多いため） */
+.flow__support-item {
+  min-width: 0;
+  text-align: left;
+}
+.flow__support-item-head {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+/* 数字はHero/Whyの見出し番号と違い、イタリック体＋黄オリーブ色（参考画像に実測で合わせた） */
+.flow__support-item-num {
+  flex-shrink: 0;
+  font-family: var(--font-tagline);
+  font-style: italic;
+  font-weight: 500;
+  color: var(--yellow-deep);
+  font-size: 1.9rem;
+  line-height: 1;
+}
+.flow__support-title {
+  min-width: 0;
+  font-weight: 700;
+  font-size: clamp(0.95rem, 4.8vw, 1.3rem);
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.flow__support-item-line {
+  display: block;
+  width: 2.2rem;
+  height: 3px;
+  margin: 1rem 0 1.1rem;
+  background: var(--yellow-deep);
+}
+/* 説明文の行数がカードごとに違うと下のイラストの開始位置がずれるので、3行分の高さを確保して揃える */
+.flow__support-desc { font-size: 0.9rem; color: #555; line-height: 1.75; margin-bottom: 1.3rem; min-height: calc(1.75em * 3); }
+/* 3枚とも同じ縦横比(3:2)に揃えた画像を使うので、object-fit:containでも見た目の大きさが揃う */
+.flow__support-illust { display: block; width: 100%; aspect-ratio: 3 / 2; }
+.flow__support-illust img { display: block; width: 100%; height: 100%; object-fit: contain; }
+
+.flow__tip {
+  position: relative;
+  z-index: 1;
+  /* flow__supportを非表示にしたため、元は5remだった上余白を詰めて空間を減らす */
+  margin: 4.2rem auto 0;
+  max-width: 720px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  text-align: center;
+}
+.flow__tip-text {font-weight:700; font-size: 1.2rem; line-height: 1.9; color: #444; }
+/* 1つ目の<br>（「ご不明点やご要望は」の直後）はスマホ専用の改行。PCでは非表示にして元の2行のまま維持する */
+.flow__tip-text br:first-of-type { display: none; }
+
+/* ==========================================================================
+   Profile
+   ========================================================================== */
+/* 装飾を置く余白を下部に確保するため、bottom paddingを厚めに取る */
+.profile {
+  position: relative;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 9rem 1.5rem 9rem;
+}
+
+/* 背景装飾：左下に「黒三角＋ティール円」のクラスタ。
+   ページ全体で主役クラスタの左右を交互にする設計（Profile=左→Why=右→Works=左→Flow=右→FAQ=左）の1番目 */
+.profile__deco-tri-ink {
+  bottom: -3vw; left: calc(50% - 50vw);
+  width: 22vw; height: 21vw;
+  max-width: 420px; max-height: 300px;
+  clip-path: polygon(0 0, 0 100%, 100% 82%);
+}
+/* 円は三角と同じ側に添えて重ねる（円が下・三角が上） */
+.profile__deco-circle-blue {
+  bottom: -6vw; left: calc(50% - 50vw - 3vw);
+  width: 23vw; height: 23vw;
+  max-width: 340px; max-height: 340px;
+  opacity: 0.85;
+}
+.profile__deco-dots-tr { top: 2rem; right: calc(50% - 50vw + 9vw); width: 120px; height: 100px; }
+/* 既存のdots-tr（右上）からできるだけ離した左中央あたりに、サイズ違いで2つ目を追加 */
+.profile__deco-dots-ml { top: 40%; left: calc(50% - 50vw + 3vw); width: 90px; height: 150px; opacity: 0.16; }
+.profile__deco-cross-l { bottom: 4rem; right: calc(50% - 50vw + 1.5vw); }
+
+.profile__grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 3rem;
+  align-items: start;
+}
+.profile > .section-label { position: relative; z-index: 1; }
+.profile__photo img {
+  display: block;
+  width: 100%;
+  border-radius: 16px;
+  box-shadow: var(--shadow-card);
+}
+.profile__lead { font-weight: 700; font-size: 2.4rem; margin: 0.6rem 0 0.8rem; }
+/* 1つ目の<br>（「見た目は」の直後）はスマホ専用の改行。PCでは非表示にして元の2行のまま維持する */
+.profile__lead br:first-of-type { display: none; }
+.profile__name { font-size: 1.15rem; font-weight: 700; margin-bottom: 1rem; }
+.profile__name span { font-weight: 400; font-size: 0.85rem; color: #666; margin-left: 0.6rem; }
+.profile__body { font-size: 1rem; color: #444; margin-bottom: 1.4rem; }
+
+/* ==========================================================================
+   FAQ
+   ========================================================================== */
+/* overflow:hidden を使うと max-width:1280px の外側で装飾が切れてしまうため、
+   はみ出しは body 側の overflow-x:hidden に任せて画面端まで届かせる */
+.faq { position: relative; max-width: 1280px; margin: 0 auto; padding: 9rem 1.5rem 7rem; }
+.faq__list { max-width: 900px; margin: 0 auto; }
+.faq__cta { position: relative; z-index: 1; display: flex; justify-content: center; margin-top: 3.5rem; }
+
+/* 背景装飾：右端の黄色いくさびのみ。斜辺がフッターへ向かい、ページの締めに視線を落とす。
+   Flowの主役が左下のため、その真下（FAQ上部）は小さい点のみにして主役クラスタ同士がぶつからないようにする */
+.faq__deco-tri-yellow {
+  bottom: -5vw; right: calc(50% - 50vw);
+  width: 28vw; height: 32vw;
+  max-width: 400px; max-height: 460px;
+  clip-path: polygon(100% 0, 100% 100%, 0 86%);
+}
+.faq__deco-dots-tl { top: 2rem; left: calc(50% - 50vw + 6vw); width: 120px; height: 100px; }
+/* 既存のdots-tl（左上）から離した左下あたりに、サイズ違いで2つ目を追加（右下の黄三角は避ける） */
+.faq__deco-dots-bl { bottom: 3rem; left: calc(50% - 50vw + 16vw); width: 150px; height: 70px; opacity: 0.14; }
+.faq__deco-cross-tr { top: 5rem; right: calc(50% - 50vw + 1.5vw); }
+.faq > .section-label { position: relative; z-index: 1; }
+/* 10問並ぶと縦に長くなるので、5問ぶんの高さ（実測：閉状態68.8px×5+gap×4=395px）で
+   内側スクロールにする。開閉アニメーションは.faq__item__answer側で完結しているので、
+   リスト側にoverflow-yを付けても干渉しない */
+.faq__list {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  max-height: 410px;
+  overflow-y: auto;
+  padding-right: 0.6rem;
+  scrollbar-gutter: stable;
+}
+@media (max-width: 640px) {
+  /* スマホは質問文が2〜3行に折り返り1問あたりが長くなるため、5問ぶんの高さも実測(697px)に合わせて広げる */
+  .faq__list { max-height: 710px; }
+}
+.faq__item {
+  background: var(--white);
+  border-radius: 14px;
+  padding: 1.1rem 1.4rem;
+  box-shadow: var(--shadow-card);
+}
+.faq__item summary {
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 700;
+  font-size: 1.2rem;
+  gap: 1rem;
+}
+.faq__item summary::-webkit-details-marker { display: none; }
+.faq__item summary::after {
+  content: "+";
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  flex-shrink: 0;
+  transition: transform 0.25s ease;
+}
+.faq__item[open] summary::after { transform: rotate(45deg); }
+
+.faq__item-q-row { display: flex; align-items: center; gap: 0.9rem; min-width: 0; }
+.faq__item-question { min-width: 0; }
+.faq__q-badge, .faq__a-badge {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  line-height: 1;
+}
+.faq__q-badge { background: var(--yellow); color: var(--ink); }
+.faq__a-badge { background: var(--ink); color: var(--white); margin-top: 0.2rem; }
+
+/* 回答欄：JSがheightを0⇔scrollHeightにアニメーションさせるラッパー。
+   [open]時はheight:autoにしておくことで、JS実行前後や無効時でもopen属性だけで正しく表示される */
+.faq__item__answer { height: 0; overflow: hidden; }
+.faq__item[open] .faq__item__answer { height: auto; }
+.faq__item-a-row { display: flex; align-items: flex-start; gap: 0.9rem; padding-top: 0.9rem; }
+.faq__item-a-row p { font-size: 1rem; color: #555; }
+
+/* ==========================================================================
+   Footer
+   ========================================================================== */
+.site-footer { background: var(--ink); color: var(--white); padding: 3.5rem 1.5rem; }
+.site-footer__inner {
+  max-width: 480px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1rem;
+}
+.site-footer__copyright { font-size: 0.78rem; color: rgba(255, 255, 255, 0.6); }
+.site-footer__links { display: flex; gap: 1.6rem; }
+.site-footer__links a { position: relative; font-size: 0.85rem; }
+.site-footer__links a::after {
+  content: "";
+  position: absolute;
+  left: 0; bottom: -2px;
+  width: 0; height: 1px;
+  background: var(--yellow);
+  transition: width 0.3s ease;
+}
+.site-footer__links a:hover::after { width: 100%; }
+
+/* ==========================================================================
+   Reveal（スクロール連動フェードイン）
+   ========================================================================== */
+.reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.reveal.is-visible { opacity: 1; transform: none; }
+.why__grid .why__card:nth-child(1) { transition-delay: 0s; }
+.why__grid .why__card:nth-child(2) { transition-delay: 0.1s; }
+.why__grid .why__card:nth-child(3) { transition-delay: 0.2s; }
+.service-rows .service-row:nth-child(1) { transition-delay: 0s; }
+.service-rows .service-row:nth-child(2) { transition-delay: 0.08s; }
+.service-rows .service-row:nth-child(3) { transition-delay: 0.16s; }
+.works__projects .work-project:nth-child(1) { transition-delay: 0s; }
+.works__projects .work-project:nth-child(2) { transition-delay: 0.1s; }
+.flow__support-grid .flow__support-item:nth-child(1) { transition-delay: 0s; }
+.flow__support-grid .flow__support-item:nth-child(2) { transition-delay: 0.08s; }
+.flow__support-grid .flow__support-item:nth-child(3) { transition-delay: 0.16s; }
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+}
+
+/* ==========================================================================
+   persona切り替え時のフェード
+   ========================================================================== */
+main.persona-transition { opacity: 0; transition: opacity 0.25s ease; }
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+/* 4カラム帯（1101px以上）は1列あたりの幅が狭いので、見出しを幅に応じて詰めて2行に収める。
+   1280px以上では1.4remで頭打ちになるため、デスクトップでの見え方は変わらない */
+@media (min-width: 1101px) {
+  .service-row--quad .service__title { font-size: clamp(1.15rem, 1.75vw, 1.4rem); }
+}
+
+/* 4カラムは1100px未満だと1列あたり約160pxしかなく、見出しが4行に折れて段が崩れる。
+   4カラムが成立する幅でだけ4列にし、それ未満は2列にする */
+@media (max-width: 1100px) {
+  .service-row--quad { grid-template-columns: repeat(2, 1fr); }
+  .service-row--quad .service-row__col--text-only { border-left: none; border-top: 1px solid rgba(255, 255, 255, 0.15); }
+  .service-row--quad .service-row__col--text-only:nth-child(even) { border-left: 1px solid rgba(255, 255, 255, 0.15); }
+  .service-row--quad .service-row__col--text-only:nth-child(-n+2) { border-top: none; }
+}
+
+@media (max-width: 980px) {
+  .hero__inner { grid-template-columns: 1fr; }
+  /* スマホでは 英語コピー→モック画像→日本語コピー→ボタン の順にしたい。
+     tagline/headline/ctaは.hero__textの子なので、.hero__textをdisplay:contentsで消して
+     .hero__inner配下に展開し、4要素をorderで並べ替える */
+  .hero { padding: 1.2rem 0 2rem; }
+  .hero__dots { top: 22%; right: 2%; width: 103px; height: 70px; }
+  .hero__dots--bottom { width: 70px; height: 70px; }
+  /* 左paddingを詰めてテキストを画面端寄りにする */
+  .hero__inner { padding: 0 1.5vw 0 3vw; }
+  .hero__text { display: contents; }
+  /* ファーストビューに収めたいので、英語コピーとモック画像の間はギリギリまで詰める（少し重ねる） */
+  .hero__tagline { order: 1; margin-bottom: 0.8rem; position: relative; z-index: 1; }
+  .hero__headline { order: 3; font-size: clamp(1.2rem, 3.38vw, 3.15rem); text-align: center; margin-top: 24px; }
+  .hero__graphic {
+    order: 2;
+    min-height: 0;
+    justify-content: flex-end;
+    margin-top: -0.6rem;
+    margin-bottom: 4vw;
+    padding-top: 0;
+  }
+  .hero__cta { order: 4; margin-top: 0; text-align: center; }
+  .hero__graphic-tri { width: 79vw; height: 77vw; top: -18vw; right: 0vw; }
+  .hero__graphic-blob { width: 20vw; height: 20vw; right: 41vw; top: 40vw; bottom: auto; }
+  .hero__device { width: 66vw; max-width: 66vw; }
+  /* スマホでは上下の余白が間延びして見えるため、セクションごとにかなり詰める */
+  .why { padding: 3.5rem 1.5rem; }
+  .services { padding: 3rem 0 1.5rem; }
+  .works { padding: 3rem 1.5rem 4rem; }
+  .flow { padding: 3.5rem 1.5rem; }
+  .profile { padding: 3.5rem 1.5rem; }
+  .faq { padding: 3.5rem 1.5rem 3rem; }
+  /* 神社仏閣をPC3段目の先頭に固定するための強制改行だが、スマホでは行数が
+     増えて縦に伸びる原因になるだけなので無効化し、自然な折り返しに任せる */
+  .works__tags-break { display: none; }
+  /* 文字サイズは標準仕様10の下限(0.875rem)のため変更せず、余白を詰めて縦を縮める */
+  .works__tags { gap: 0.4rem; }
+  .works__tag { padding: 0.24em 0.75em; }
+  .why__grid { grid-template-columns: 1fr; }
+  .why__card { max-width: 620px; margin: 0 auto; }
+  .works__projects { grid-template-columns: 1fr; }
+  /* イラスト＋profile__leadだけ横並びにし、name/bodyはその下に全幅で続ける。
+     profile__textをdisplay:contentsで解除し、子要素をprofile__grid直下の
+     グリッドアイテムとしてそれぞれ配置し直す */
+  .profile__grid {
+    grid-template-columns: 170px 1fr;
+    column-gap: 1.1rem;
+    row-gap: 1.3rem;
+    align-items: center;
+  }
+  /* イラストは本文より目立ちすぎないよう、PC時の約半分の大きさに縮小 */
+  .profile__photo { max-width: 170px; margin: 0; grid-column: 1; grid-row: 1; }
+  .profile__text { display: contents; }
+  .profile__lead { grid-column: 2; grid-row: 1; margin: 0; }
+  .profile__name { margin-bottom:0; grid-column: 1 / -1; grid-row: 2; }
+  .profile__body { grid-column: 1 / -1; grid-row: 3; }
+  /* .service-rowsのvwベースの端寄せ（left:50%+margin-left:-50vw）は、.servicesに横paddingが
+     無いこの幅では不要な上、モバイルブラウザによっては100vwのずれで右に余白・左が欠ける原因になる。
+     この帯では単純に幅100%に戻す */
+  .service-rows { position: static; width: 100%; left: auto; margin-left: 0; }
+  .service-row, .service-row--reverse { grid-template-columns: 1fr; }
+  .service-rows .service-row:not(.service-row--pair):not(.service-row--quad) { height: auto; }
+  .service-row__text, .service-row__media { order: initial; }
+  .service-row--pair { grid-template-columns: 1fr; }
+  .service-row__col { grid-template-columns: 1fr; border-left: none; border-top: 1px solid rgba(28, 28, 28, 0.08); }
+  .service-row__col:first-child { border-top: none; }
+  .service-row__media { min-height: 260px; clip-path: none; }
+  .service-row__col .service-row__media { clip-path: none; }
+  .flow__step-card { flex-basis: 270px; min-height: 370px; }
+  .flow__support-grid { grid-template-columns: 1fr; gap: 1.8rem; }
+}
+
+@media (max-width: 860px) {
+  .nav-flyout { display: none; }
+  .site-header__actions .btn { display: none; }
+  .nav-toggle { display: block; }
+}
+
+@media (max-width: 640px) {
+  .works__collage { padding: 1.6rem 0; gap: 0.5rem; }
+  .works__collage-track { gap: 0.5rem; }
+  .works__collage-copy { padding: 1.2em 1.4em; }
+  /* cqw基準だとスマホ幅では文字が小さくなりすぎるため、固定サイズに切り替える。
+     円は装飾なので非表示にし、flex行を縦積みにしてモニターを本文の上に横幅いっぱいで置く */
+  .work-project--twoface { padding: 1.8rem 1.3rem; }
+  .work-project__tf-circle { display: none; }
+  .work-project--twoface .work-project__content { flex-direction: column; align-items: stretch; gap: 0; padding: 0; }
+  .work-project__tf-monitor-wrap { order: -1; }
+  .work-project__tf-monitor {
+    width: 100%;
+    margin-bottom: 1.4rem;
+    filter: drop-shadow(0 10px 16px rgba(28, 28, 28, 0.16));
+  }
+  .work-project--twoface .work-project__body { flex: 1 1 auto; max-width: 100%; }
+  /* スマホ幅は1カラムなので、ロゴ+吹き出しも画面幅に応じて折り返し可能にする */
+  .work-project__brand-row { width: auto; max-width: 100%; flex-wrap: wrap; margin-bottom: 1.2rem; }
+  .work-project__brand-logo { width: 150px; }
+  .work-project--twoface .work-project__note { font-size: 0.8rem; padding: 0.6rem 0.9rem; }
+  .work-project--twoface .work-project__label { font-size: 0.98rem; margin-bottom: 0; }
+  .work-project--twoface .work-project__title { font-size: 2.1rem; margin-bottom: 0.8rem; }
+  /* .work-project__desc の文字サイズはclampの下限(0.95rem)がここでも効くので上書き不要 */
+  .work-project__badges { gap: 0.5rem; margin-top: 1.4rem; margin-bottom: 0.4rem; }
+  .work-project__badge-divider { height: 42px; }
+  .work-project__cta { font-size: 0.92rem; white-space: nowrap; gap: 0.5rem; margin-top: 1.3rem; padding: 0.8rem 0.8rem 0.8rem 1.15rem; }
+  .work-project__cta-arrow { width: 28px; height: 28px; font-size: 0.9rem; }
+  .why__grid, .works__grid { grid-template-columns: 1fr; }
+  /* 画面幅の約8割になるよう拡大（実測ベース） */
+  .hero__tagline { font-size: clamp(1.8rem, 12vw, 3rem); }
+  .section-label__heading { font-size: 2rem; }
+  /* 「見た目は〜」「人当たりの〜」の2行（<br>区切り）がそれぞれ折り返さない上限値（実測、360px幅基準） */
+  .profile__lead { font-size: 1.125rem; }
+  .profile__lead br:first-of-type { display: inline; }
+  /* スマホでは画面が小さく、微細な文字や小さい図形が潰れるので情報量を落とす
+     （キーワード＋主要な図形だけ残す。フレームの罫線は骨格として維持する） */
+  .fv-brand,
+  .fv-sub,
+  .fv-key__index,
+  .fv-ticks,
+  .fv-l--build > .fv-snap[width="34"] { display: none; }
+  /* h1はPC用に3分割の<br>を入れているが、スマホ幅ではその改行位置だと
+     末尾2文字だけが溢れるため、<br>を無効化してブラウザの自然な折り返しに任せる */
+  .hero__headline br { display: none; }
+  .hero__cross { display: none; }
+  .target__cta { align-items: stretch; }
+  /* ボタンが全幅に伸びるため、中のテキスト+矢印も中央寄せにする */
+  .target__cta .btn { justify-content: center; }
+  /* 3行それぞれが折り返さず1行に収まる上限値（実測、360px幅基準。1.4remだと3行目が360pxで折り返した） */
+  .section-heading { font-size: 1.375rem; }
+  .section-heading br:first-of-type { display: inline; }
+  .flow__tip-text br:first-of-type { display: inline; }
+  .faq__item summary { font-size: 1rem; }
+  .why__title { font-size: 1.2rem; }
+  .service-row__text { padding: 2.2rem 1.5rem 2.8rem; }
+  .service-row__col .service-row__text { padding: 2.2rem 1.5rem 2.8rem; }
+  .service-row--quad { grid-template-columns: 1fr; }
+  /* 上2つと左右の余白を揃える（PC用のpaddingが残っていて左右だけ広くずれていた） */
+  .service-row--quad .service-row__col--text-only .service-row__text { padding: 2.2rem 1.5rem 2.8rem; }
+  /* 1列になれば見出しの行数が揃うので、2行分の高さ確保は不要 */
+  /* 上2つのservice-rowと統一感を出すため、quadもicon+titleの横並び・左寄せに変更。
+     上2つはservice-row__textのrow-gap(1.5rem)でdesc前に余白ができるが、
+     quadはdisplay:blockでrow-gapが効かないため、同じ1.5remをmargin-bottomで補う */
+  .service-row--quad .service__head { display: flex; text-align: left; margin-bottom: 1.5rem; }
+  .service-row--quad .service__icon { margin: 0; flex-shrink: 0; }
+  .service-row--quad .service__title {
+    min-height: 0;
+    font-size: 1.4rem;
+    line-height: 1.35;
+    display: block;
+    text-align: left;
+  }
+  .service-row--quad .service-row__col--text-only .service-row__text { text-align: left; }
+  .service-row--quad .service-row__col--text-only { border-left: none; }
+  .service-row--quad .service-row__col--text-only:nth-child(n+2) { border-top: 1px solid rgba(255, 255, 255, 0.15); }
+  .service-row--quad .service-row__col--text-only:first-child { border-top: none; }
+  /* icon+titleは横並びのまま、titleを小さくする。
+     右上絶対配置の連番（.service-row__num）と重ならないよう、
+     head行だけ右側にスペースを確保しておく */
+  .service__head { flex-direction: row; align-items: center; column-gap: 1rem; padding-right: 4.2rem; }
+  /* flexの子として幅方向に潰れてしまうため、正方形を維持しつつ小さめサイズに統一 */
+  .service__icon { flex-shrink: 0; width: 56px; height: 56px; }
+  .service__title { font-size: 1.4rem; line-height: 1.35; }
+  /* 05・06はPCの2行表示用に<br>を入れているが、横並びで幅が狭いスマホでは
+     さらに折り返しが重なって行数が増えすぎるため、<br>を無効化して自然な折り返しに任せる */
+  .service-row--quad .service__title br { display: none; }
+  /* 上2つのservice-rowは写真を外し、下の4カード（service-row--quad）と同じ
+     「アイコン＋テキストのみ」の見た目に揃える */
+  .service-row__media { display: none; }
+  /* 上2つも、下のquadと同様に1枚の背景写真を2カードで共有する。
+     各service-rowが持つ白背景を透過させ、暗い写真の上でも読めるよう
+     quadと同じ文字色・タグ配色に切り替える */
+  .service-rows__top2 {
+    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url("../images/service01.jpg") center/cover no-repeat;
+  }
+  .service-rows__top2 .service-row { background: transparent; border-top-color: rgba(255, 255, 255, 0.15); }
+  .service-rows__top2 .service-row:first-child { border-top: none; }
+  .service-rows__top2 .service__icon img { filter: brightness(0) invert(1); }
+  .service-rows__top2 .service__title { color: var(--white); }
+  .service-rows__top2 .service__desc { color: rgba(255, 255, 255, 0.78); }
+  .service-rows__top2 .service__title,
+  .service-rows__top2 .service__desc {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35), 0 0 14px rgba(0, 0, 0, 0.5);
+  }
+  .service-rows__top2 .service__tag {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.32);
+    color: var(--white);
+  }
+  .work-project__title { font-size: 1.55rem; }
+  .flow__step-card { flex-basis: 68vw; padding: 0.78rem 0.9rem 1.8rem; }
+  .flow__step-arrow { display: none; }
+
+  /* スマホでは大型装飾が本文に被りやすいため、クロス・ドットは省き、
+     面で見せる図形（三角・円）だけ残して薄くする */
+  .deco--cross, .deco--dots, .deco--dots-yellow { display: none; }
+  .deco--tri-yellow, .deco--tri-ink, .deco--circle-blue, .deco--circle-yellow { opacity: 0.5; }
+}

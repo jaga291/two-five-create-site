@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Two Five create | Web制作・WordPress構築・AI業務改善</title>
+<meta name="description" content="Two Five createは、Web制作会社より柔軟に、フリーランスより堅実に。業界歴15年以上の経験で、WordPress構築・フロントエンド実装・サイト移転・インフラ整備・AI業務改善までワンストップで対応します。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Barlow+Condensed:ital,wght@1,300;1,400;1,500&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div id="appRoot">
+<header class="site-header">
+  <div class="site-header__inner">
+    <div class="site-header__brand">
+      <a href="#" class="site-logo">
+        <img src="images/logo-horizontal.png" alt="Two Five create" class="site-logo__img">
+      </a>
+      <span class="persona-badge" id="personaBadge" hidden></span>
+    </div>
+    <div class="site-header__actions">
+      <div class="nav-flyout">
+        <button type="button" class="nav-flyout-toggle" aria-label="メニューを開く" aria-haspopup="true">
+          <span></span><span></span><span></span>
+        </button>
+        <nav class="site-nav" aria-label="サイト内メニュー">
+          <a href="#profile">プロフィール</a>
+          <a href="#services">サービス</a>
+          <a href="#works">制作実績</a>
+          <a href="#flow">制作フロー</a>
+          <a href="#faq">よくあるご質問</a>
+          <button type="button" class="site-nav__action" id="switchPersona">表示を切り替える</button>
+        </nav>
+      </div>
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLSdSFUZ3bPy-wpLt6_KpEXGRpiyg-IPfHSIgzPI_nJzWggIOJw/viewform" data-contact-link target="_blank" rel="noopener noreferrer" class="btn btn--primary btn--small">お問い合わせ<span aria-hidden="true">→</span><span class="sr-only">（別タブで開きます）</span></a>
+      <button type="button" class="nav-toggle" id="navToggle" aria-label="メニューを開く" aria-expanded="false" aria-controls="mobileDrawer">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="drawer-overlay" id="drawerOverlay"></div>
+<nav class="drawer" id="mobileDrawer" aria-hidden="true" inert>
+  <a href="#profile">プロフィール</a>
+  <a href="#services">サービス</a>
+  <a href="#works">制作実績</a>
+  <a href="#flow">制作フロー</a>
+  <a href="#faq">よくあるご質問</a>
+  <a href="https://docs.google.com/forms/d/e/1FAIpQLSdSFUZ3bPy-wpLt6_KpEXGRpiyg-IPfHSIgzPI_nJzWggIOJw/viewform" data-contact-link target="_blank" rel="noopener noreferrer" class="btn btn--primary drawer__cta">お問い合わせ<span class="sr-only">（別タブで開きます）</span></a>
+  <button type="button" class="drawer__persona-switch" id="switchPersonaDrawer">表示を切り替える</button>
+</nav>
+
+<button type="button" class="back-to-top" id="backToTop" aria-label="ページのトップに戻る">
+  <svg viewBox="0 0 24 24" fill="none"><path d="M12 19V5M5 12l7-7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+
+<main>
+  <!-- 1. Hero（分岐：見出し・サブコピー） -->
+  <section class="hero" id="hero">
+    <div class="hero__shape-yellow" aria-hidden="true" data-parallax-x="-0.05" data-parallax="0.35"></div>
+    <div class="hero__dots" aria-hidden="true" data-parallax="0.2"></div>
+    <div class="hero__dots hero__dots--bottom" aria-hidden="true" data-parallax="0.18"></div>
+    <span class="hero__cross hero__cross--top" aria-hidden="true" data-parallax="0.24"></span>
+    <span class="hero__cross hero__cross--bottom" aria-hidden="true" data-parallax="0.22"></span>
+    <div class="hero__inner">
+      <div class="hero__text">
+        <!-- 英字タグラインは見出し階層に載せないデザインラベル（スタイルは.hero__taglineのまま） -->
+        <p class="hero__tagline">ARCHITECTURE FOR<br>DYNAMIC RESULTS</p>
+        <h1 class="hero__headline" id="heroHeadline">15年以上の経験を持つフリーランスが<br>WEBサイトの制作から運用まで直接対応。</h1>
+        <!-- ヒーローは初期表示で画面内にあるため.revealは付けない（coding-notes 標準仕様7） -->
+        <div class="hero__cta">
+          <a href="https://docs.google.com/forms/d/e/1FAIpQLSdSFUZ3bPy-wpLt6_KpEXGRpiyg-IPfHSIgzPI_nJzWggIOJw/viewform" data-contact-link target="_blank" rel="noopener noreferrer" class="btn btn--primary">無料相談・お見積りはこちら<span aria-hidden="true">→</span><span class="sr-only">（別タブで開きます）</span></a>
+        </div>
+      </div>
+      <div class="hero__graphic">
+        <div class="hero__graphic-blob" aria-hidden="true" data-parallax="0.35"></div>
+        <div class="hero__graphic-tri" aria-hidden="true" data-parallax-x="0.08" data-parallax="0.15"></div>
+        <!-- FVデバイス：モニターとスマホの筐体は元画像（sozai/hero_off.png を切り出したもの）をそのまま使う。
+             画面部分だけを、実測した四隅へ matrix3d で射影変換したSVGで覆い、
+             ブランドモーション（STRATEGY→DESIGN→BUILD→GROWTH）を再生する。
+             元画像のモニターは単純な回転ではなく右辺が約16%高い台形パースなので、
+             アフィン変換（rotate/skew）では画面にぴったり重ならない。射影変換が必須。
+             四隅の座標と変換行列の算出は js/main.js の FV_SCREEN_QUAD / quadToMatrix3d を参照。 -->
+        <div class="hero__device" id="fvDeviceRoot">
+          <!-- 元画像は周囲に3割ほど透明の余白があり、その分だけ機器が小さく見えていたので、
+               実コンテンツの範囲（1153×928）に切り出したものを使う。
+               ファーストビューの画像なのでWebP（267KB）優先、非対応環境はPNGにフォールバック -->
+          <picture>
+            <source srcset="images/hero-device.webp" type="image/webp">
+            <img src="images/hero-device.png" width="1153" height="928" fetchpriority="high" alt="PCモニターとスマートフォンにTwo Five createのサイトを表示したイメージ。モニターにはSTRATEGY・DESIGN・BUILD・GROWTHという制作工程が順に表示される" class="hero__device-photo">
+          </picture>
+          <!-- JSが寸法とmatrix3dを算出するまでは非表示。JS無効時は元画像の画面がそのまま見える -->
+          <div class="hero__device-screen hero__device-screen--monitor" id="fvScreenStage" aria-hidden="true">
+            <svg class="fv-device" id="fvDevice" viewBox="0 0 950 606" preserveAspectRatio="none" data-scene="design" data-phase="shapes">
+              <defs>
+                <pattern id="fvDots" width="26" height="26" patternUnits="userSpaceOnUse">
+                  <circle cx="2.4" cy="2.4" r="1.7" fill="#1c1c1c"/>
+                </pattern>
+                <pattern id="fvDotsSm" width="16" height="16" patternUnits="userSpaceOnUse">
+                  <circle cx="1.6" cy="1.6" r="1.2" fill="#1c1c1c"/>
+                </pattern>
+              </defs>
+              <!-- 画面の実アスペクト比(1.567)に合わせて viewBox は 950×606。
+                   中身は 950×572 で組んであるので、上下に17ずつ余白を取って中央に置く -->
+              <g transform="translate(0 17)">
+              <!-- 常時表示のフレーム・ラベル類 -->
+              <g class="fv-frame">
+                <rect x="40" y="46" width="870" height="480" fill="none" stroke="#1c1c1c" stroke-opacity="0.1"/>
+                <path d="M40 76 V46 H70 M880 46 H910 V76 M910 496 V526 H880 M70 526 H40 V496" fill="none" stroke="#1c1c1c" stroke-opacity="0.32" stroke-width="2.4"/>
+                <text class="fv-brand" x="40" y="32">TWO FIVE CREATE</text>
+                <g class="fv-ticks">
+                  <rect x="820" y="25" width="18" height="3"/>
+                  <rect x="844" y="25" width="18" height="3"/>
+                  <rect x="868" y="25" width="18" height="3"/>
+                  <rect x="892" y="25" width="18" height="3"/>
+                </g>
+              </g>
+
+              <!-- 01 STRATEGY：点が現れ、線でつながり、グリッドが立ち上がる -->
+              <g class="fv-layer fv-l--strategy">
+                <line class="fv-draw fv-hair" x1="40" y1="392" x2="910" y2="392" pathLength="1" style="--i:1"/>
+                <line class="fv-draw fv-hair" x1="662" y1="46" x2="662" y2="526" pathLength="1" style="--i:5"/>
+                <path class="fv-draw" d="M96 470 L216 434 L336 490 L456 428 L576 466 L696 420" pathLength="1" style="--i:7"/>
+                <path class="fv-draw" d="M676 260 L790 158 L886 268 L740 330 Z" pathLength="1" style="--i:3"/>
+                <circle class="fv-node" cx="96" cy="470" r="7" style="--i:2"/>
+                <circle class="fv-node" cx="790" cy="158" r="7" style="--i:0"/>
+                <circle class="fv-node" cx="336" cy="490" r="7" style="--i:4"/>
+                <circle class="fv-node" cx="886" cy="268" r="7" style="--i:6"/>
+                <circle class="fv-node" cx="696" cy="420" r="7" style="--i:8"/>
+              </g>
+
+              <!-- 02 DESIGN：四角・円・ラインがスライドして組み上がる -->
+              <g class="fv-layer fv-l--design">
+                <rect class="fv-slide" x="656" y="72" width="210" height="132" fill="none" stroke="#1c1c1c" stroke-width="2.4" style="--i:2"/>
+                <line class="fv-draw fv-hair" x1="92" y1="392" x2="470" y2="392" pathLength="1" style="--i:5"/>
+                <rect class="fv-slide fv-fill-yellow" x="812" y="170" width="76" height="76" style="--i:4"/>
+                <rect class="fv-slide fv-fill-ink" x="92" y="414" width="300" height="14" style="--i:1"/>
+                <circle class="fv-pop fv-stroke-blue" cx="724" cy="300" r="58" style="--i:0"/>
+                <path class="fv-slide fv-fill-ink" d="M812 372 a56 56 0 0 1 112 0 Z" style="--i:7"/>
+                <rect class="fv-slide" x="92" y="448" width="220" height="78" fill="none" stroke="#1c1c1c" stroke-width="2.4" style="--i:6"/>
+                <rect class="fv-slide" x="330" y="448" width="220" height="78" fill="none" stroke="#1c1c1c" stroke-width="2.4" style="--i:3"/>
+              </g>
+
+              <!-- 03 BUILD：グリッドが分割され、モジュールが正しい位置に収まる -->
+              <g class="fv-layer fv-l--build">
+                <line class="fv-draw fv-hair" x1="640" y1="46" x2="640" y2="526" pathLength="1" style="--i:3"/>
+                <line class="fv-draw fv-hair" x1="748" y1="46" x2="748" y2="526" pathLength="1" style="--i:0"/>
+                <line class="fv-draw fv-hair" x1="856" y1="46" x2="856" y2="526" pathLength="1" style="--i:8"/>
+                <line class="fv-draw fv-hair" x1="40" y1="368" x2="606" y2="368" pathLength="1" style="--i:6"/>
+                <rect class="fv-snap fv-fill-ink" x="752" y="72" width="154" height="42" style="--i:7"/>
+                <rect class="fv-snap fv-fill-ink" x="92" y="392" width="264" height="10" style="--i:1"/>
+                <rect class="fv-snap fv-fill-soft" x="644" y="152" width="208" height="110" style="--i:5"/>
+                <rect class="fv-snap fv-fill-yellow" x="860" y="152" width="46" height="284" style="--i:2"/>
+                <rect class="fv-snap" x="92" y="422" width="34" height="34" fill="none" stroke="#1c1c1c" stroke-width="2.4" style="--i:4"/>
+                <rect class="fv-snap fv-fill-ink" x="138" y="422" width="34" height="34" style="--i:9"/>
+              </g>
+
+              <!-- 04 GROWTH：構造が外へ広がり、右上方向への流れが生まれる -->
+              <g class="fv-layer fv-l--growth">
+                <line class="fv-draw fv-hair" x1="96" y1="500" x2="716" y2="300" pathLength="1" style="--i:3"/>
+                <circle class="fv-ring" cx="772" cy="286" r="54" style="--i:0"/>
+                <rect class="fv-pop" x="218" y="437" width="36" height="36" fill="none" stroke="#1c1c1c" stroke-width="2.4" style="--i:1"/>
+                <circle class="fv-ring fv-stroke-blue" cx="772" cy="286" r="164" style="--i:5"/>
+                <line class="fv-draw fv-hair" x1="772" y1="286" x2="930" y2="112" pathLength="1" style="--i:2"/>
+                <rect class="fv-pop fv-fill-yellow" x="466" y="340" width="62" height="62" style="--i:7"/>
+                <line class="fv-draw fv-hair" x1="772" y1="286" x2="602" y2="418" pathLength="1" style="--i:6"/>
+                <rect class="fv-pop" x="606" y="284" width="78" height="78" fill="none" stroke="#1c1c1c" stroke-width="2.4" style="--i:4"/>
+              </g>
+
+              <!-- キーワード（タイピング表示）。JS未実行時はDESIGNが静止表示される -->
+              <g class="fv-key">
+                <text class="fv-key__index" id="fvIndex" x="92" y="200">02 / 04</text>
+                <text class="fv-key__word" id="fvKeyWord" x="92" y="336"><tspan class="fv-key__initial" id="fvKeyInitial">D</tspan><tspan id="fvKeyRest">ESIGN</tspan></text>
+                <!-- カーソルは細さを制御したいのでテキストではなく矩形。x座標はJSが文字幅から算出する
+                     （JS未実行時のフォールバックとして、DESIGNの実測幅に合わせた初期値を入れてある） -->
+                <rect class="fv-cursor" id="fvCursor" x="580" y="228" width="4" height="116"/>
+                <text class="fv-sub" id="fvSub" x="92" y="552">VISUAL &#183; INTERFACE &#183; EXPERIENCE</text>
+              </g>
+              </g>
+            </svg>
+          </div>
+          <!-- スマホ側は脇役なので静止。元画像に焼き込まれたダミーUIを覆うだけ -->
+          <div class="hero__device-screen hero__device-screen--phone" id="fvPhoneStage" aria-hidden="true">
+            <svg class="fv-phone" viewBox="0 0 300 680" preserveAspectRatio="none">
+              <rect class="fv-phone__island" x="114" y="22" width="72" height="22" rx="11"/>
+              <!-- 時刻とロゴを1つのかたまりとして画面の中央に置く。
+                   時刻のテキストは js/main.js が1分ごとに書き換える -->
+              <text class="fv-phone__clock" id="fvClock" x="150" y="278" text-anchor="middle">0:00</text>
+              <!-- sozai/Frame 1.png を白抜き＋透過に変換したもの（黄色の「F」はブランドカラーのまま） -->
+              <image href="images/logo-stacked-light.png" x="55" y="318" width="190" height="143"/>
+              <rect class="fv-phone__home" x="105" y="648" width="90" height="6" rx="3"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. Profile（共通・全ペルソナ同一） -->
+  <section class="profile" id="profile">
+    <div class="deco deco--circle-blue profile__deco-circle-blue" aria-hidden="true" data-parallax="0.6"></div>
+    <div class="deco deco--tri-ink profile__deco-tri-ink" aria-hidden="true" data-parallax-x="-0.05" data-parallax="0.15"></div>
+    <div class="deco deco--dots profile__deco-dots-tr" aria-hidden="true" data-parallax="0.2"></div>
+    <div class="deco deco--dots profile__deco-dots-ml" aria-hidden="true" data-parallax="0.18"></div>
+    <span class="deco deco--cross deco--cross--sm profile__deco-cross-l" aria-hidden="true" data-parallax="0.22"></span>
+
+    <div class="section-label reveal">
+      <span class="section-label__row"><span class="section-label__num">01</span><span class="eyebrow">PROFILE</span></span>
+      <span class="section-label__heading">プロフィール</span>
+    </div>
+    <div class="profile__grid">
+      <div class="profile__photo reveal">
+        <img src="images/profile02.jpg" alt="代表 福井宏士のイラスト" loading="lazy">
+      </div>
+      <div class="profile__text">
+        <p class="profile__lead reveal">見た目は<br>ちょっと怖いけど、<br>人当たりの良さには定評があります。</p>
+        <p class="profile__name reveal">福井 宏士 <span>Hiroshi Fukui</span></p>
+        <p class="profile__body reveal">
+          Web業界で15年以上の経験を持つ、ディレクター兼エンジニアです。<br>
+          ご相談から制作、その後の運用まで担当がコロコロ変わることなく、私が最後まで責任をもって直接サポートいたします。業種や規模に関わらず、「頼んでよかった」と思っていただける丁寧なモノづくりを心がけています。<br>
+          休日は個人開発やギターを楽しんだり、妻と2人の子どもと過ごしたり。まずはどんなことでも、お気軽にご相談ください。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Why TwoFiveCreate（共通） -->
+  <section class="why" id="why">
+    <span class="why__cross why__cross--tl" aria-hidden="true" data-parallax="0.22"></span>
+    <div class="why__dots why__dots--tl" aria-hidden="true" data-parallax="0.2"></div>
+    
+    <div class="why__tri why__tri--bl" aria-hidden="true" data-parallax-x="0.05" data-parallax="0.35"></div>
+    <div class="why__triangle-accent" aria-hidden="true"></div>
+    <div class="why__dots why__dots--br" aria-hidden="true" data-parallax="0.2"></div>
+    <span class="why__cross why__cross--br" aria-hidden="true" data-parallax="0.22"></span>
+    <div class="section-label reveal">
+      <span class="section-label__row"><span class="section-label__num">02</span><span class="eyebrow">WHY / CHOOSE US</span></span>
+      <span class="section-label__heading">選ばれる3つの理由</span>
+    </div>
+    <div class="why__grid">
+      <div class="why__card reveal">
+        <div class="why__card-head">
+          <span class="why__num-big">01</span><span class="why__slash" aria-hidden="true"></span><span class="why__tag">AGILITY &amp; PROPOSAL</span>
+        </div>
+        <div class="why__illust" aria-hidden="true">
+          <img src="images/why01.png" alt="" loading="lazy">
+        </div>
+        <div class="why__card-main">
+          <p class="why__title">フリーランスならではの強み<br>「柔軟で丁寧な体制」</p>
+          <p class="why__desc">個人事業ならではの機動力で、タイトなスケジュールにも柔軟に対応。丁寧なヒアリングと分かりやすい言葉で、最適なWebサイトの形をご提案します。</p>
+        </div>
+      </div>
+      <div class="why__card reveal">
+        <div class="why__card-head">
+          <span class="why__num-big">02</span><span class="why__slash" aria-hidden="true"></span><span class="why__tag">QUALITY</span>
+        </div>
+        <div class="why__illust" aria-hidden="true">
+          <img src="images/why03.png" alt="" loading="lazy">
+        </div>
+        <div class="why__card-main">
+          <p class="why__title">最新AIワークフローによる<br>「高品質×適正価格」</p>
+          <p class="why__desc">AIを活用したコーディングとプロの目利きを掛け合わせ、プロセスを最適化。余分な工数を削減し、クオリティを維持したままコスト圧縮を実現します。</p>
+        </div>
+      </div>
+      <div class="why__card reveal">
+        <div class="why__card-head">
+          <span class="why__num-big">03</span><span class="why__slash" aria-hidden="true"></span><span class="why__tag">SUPPORT</span>
+        </div>
+        <div class="why__illust" aria-hidden="true">
+          <img src="images/why04.png" alt="" loading="lazy">
+        </div>
+        <div class="why__card-main">
+          <p class="why__title">作って終わりじゃない。<br>公開後がスタートです。</p>
+          <p class="why__desc">面倒なサーバー保守やメンテナンスも丸ごとお任せ。Web担当者様の負担を最小限に抑え、サイトを安全に育てます。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Services（共通・6カテゴリ） -->
+  <section class="services" id="services">
+    <div class="section-label reveal">
+      <span class="section-label__row"><span class="section-label__num">03</span><span class="eyebrow">SERVICE</span></span>
+      <span class="section-label__heading">サービス一覧</span>
+    </div>
+    <div class="service-rows">
+      <div class="service-rows__top2">
+      <div class="service-row reveal">
+        <div class="service-row__text">
+          <div class="service__head">
+            <span class="service__icon" aria-hidden="true"><img src="images/service-icon01.png" alt=""></span>
+            <p class="service__title">WordPressサイト構築・改修</p>
+          </div>
+          <p class="service__desc">専門知識やコーディングの知識がなくても、「お知らせ」や「実績」を簡単に更新できるWordPressサイトを制作します。既存サイトの改修や機能追加もお気軽にご相談ください。</p>
+          <p class="service__tags"><span class="service__tag">オリジナルテーマ</span><span class="service__tag">プラグイン</span><span class="service__tag">カスタム投稿</span><span class="service__tag">カスタムフィールド</span><span class="service__tag">更新しやすい管理画面</span></p>
+          <span class="service-row__num" aria-hidden="true">01</span>
+        </div>
+        <div class="service-row__media"><img src="images/service01.jpg" alt="WordPress構築・改修"></div>
+      </div>
+      <div class="service-row service-row--reverse reveal">
+        <div class="service-row__text">
+          <div class="service__head">
+            <span class="service__icon" aria-hidden="true"><img src="images/service-icon02.png" alt=""></span>
+            <p class="service__title">フロントエンド・コーディング</p>
+          </div>
+          <p class="service__desc">いただいたデザインの魅力を100%引き出し、スマートフォンでもパソコンでも快適に閲覧できるサイトに仕上げます。見えない部分の品質にもこだわります。</p>
+          <p class="service__tags"><span class="service__tag">レスポンシブ対応</span><span class="service__tag">ピクセルパーフェクト</span><span class="service__tag">表示速度改善</span><span class="service__tag">アニメーション</span><span class="service__tag">SEO内部対策</span></p>
+          <span class="service-row__num" aria-hidden="true">02</span>
+        </div>
+        <div class="service-row__media"><img src="images/service02.jpg" alt="フロントエンド・コーディング"></div>
+      </div>
+      </div>
+      <div class="service-row service-row--quad reveal">
+        <div class="service-row__col service-row__col--text-only">
+          <div class="service-row__text">
+            <div class="service__head">
+              <span class="service__icon" aria-hidden="true"><img src="images/service-icon03.png" alt=""></span>
+              <p class="service__title">WEBサイト移転</p>
+            </div>
+            <p class="service__desc">サーバーやURLのお引っ越しを、ビジネスを止めることなく安全に行います。他社で作られたサイトの引き継ぎもお任せください。</p>
+            <p class="service__tags"><span class="service__tag">サーバー移行</span><span class="service__tag">ドメイン変更</span><span class="service__tag">SSL設定</span></p>
+            <span class="service-row__num" aria-hidden="true">03</span>
+          </div>
+        </div>
+        <div class="service-row__col service-row__col--text-only">
+          <div class="service-row__text">
+            <div class="service__head">
+              <span class="service__icon" aria-hidden="true"><img src="images/service-icon04.png" alt=""></span>
+              <p class="service__title">インフラ・サーバー設定</p>
+            </div>
+            <p class="service__desc">サーバーやドメインの準備など、面倒な裏側の設定をすべて代行します。公開後も安定して動き続ける環境を整えます。</p>
+            <p class="service__tags"><span class="service__tag">サーバー構築</span><span class="service__tag">ドメイン取得</span><span class="service__tag">セキュリティ対策</span><span class="service__tag">バックアップ</span></p>
+            <span class="service-row__num" aria-hidden="true">04</span>
+          </div>
+        </div>
+        <div class="service-row__col service-row__col--text-only">
+          <div class="service-row__text">
+            <div class="service__head">
+              <span class="service__icon" aria-hidden="true"><img src="images/service-icon05.png" alt=""></span>
+              <p class="service__title">AI活用による業務改善<br>自動化ソリューション</p>
+            </div>
+            <p class="service__desc">入力作業やデータ集計など、手間のかかる単純作業をAIとプログラムで自動化。現場で本当に役立つツールとしてご提供します。</p>
+            <p class="service__tags"><span class="service__tag">業務自動化</span><span class="service__tag">チャットボット</span><span class="service__tag">データ集計</span><span class="service__tag">API連携</span></p>
+            <span class="service-row__num" aria-hidden="true">05</span>
+          </div>
+        </div>
+        <div class="service-row__col service-row__col--text-only">
+          <div class="service-row__text">
+            <div class="service__head">
+              <span class="service__icon" aria-hidden="true"><img src="images/service-icon06.png" alt=""></span>
+              <p class="service__title">Web・SEO<br>コンサルティング</p>
+            </div>
+            <p class="service__desc">「Webからの売り上げアップ」など具体的な目標に向けて、現状を分析し改善策をご提案。長期的な視点でサポートいたします。</p>
+            <p class="service__tags"><span class="service__tag">現状分析</span><span class="service__tag">キーワード設計</span><span class="service__tag">アクセス解析</span><span class="service__tag">改善提案</span></p>
+            <span class="service-row__num" aria-hidden="true">06</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. ターゲット別メッセージ（本文とCTAリードを廃止したため、現在は全ペルソナ共通） -->
+  <section class="target" id="target">
+    <span class="deco deco--cross deco--cross--sm target__deco-cross" aria-hidden="true" data-parallax="0.22"></span>
+    <div class="target__inner reveal">
+      <h2 class="section-heading">「Webの悩み」を<br>「ビジネスの強み」へ。<br>高品質なサイトを安心価格で。</h2>
+      <div class="target__cta">
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSdSFUZ3bPy-wpLt6_KpEXGRpiyg-IPfHSIgzPI_nJzWggIOJw/viewform" data-contact-link target="_blank" rel="noopener noreferrer" class="btn btn--primary" id="targetCtaButton">無料相談・お見積りはこちら<span aria-hidden="true">→</span><span class="sr-only">（別タブで開きます）</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. Works & Projects（共通） -->
+  <section class="works" id="works">
+    <div class="deco deco--tri-ink works__deco-tri-ink" aria-hidden="true" data-parallax-x="-0.05" data-parallax="0.15"></div>
+    <div class="deco deco--circle-blue works__deco-circle-blue" aria-hidden="true" data-parallax="0.6"></div>
+    <div class="deco deco--tri-yellow works__deco-tri-yellow" aria-hidden="true" data-parallax-x="0.05" data-parallax="0.32"></div>
+    <div class="deco deco--dots-yellow works__deco-dots-tr" aria-hidden="true" data-parallax="0.2"></div>
+    <div class="deco deco--dots works__deco-dots-bl" aria-hidden="true" data-parallax="0.2"></div>
+    <span class="deco deco--cross works__deco-cross-tr" aria-hidden="true" data-parallax="0.22"></span>
+    <span class="deco deco--cross deco--cross--sm works__deco-cross-ml" aria-hidden="true" data-parallax="0.22"></span>
+
+    <div class="works__intro-grid">
+      <div class="section-label works__section-label reveal">
+        <span class="section-label__row"><span class="section-label__num">04</span><span class="eyebrow">WORKS</span></span>
+        <span class="section-label__heading">制作実績・自社プロダクト</span>
+      </div>
+      <!-- コピー自体が「多種多様な実績」を文章として伝えるため、囲む制作実績のスクリーンショットは装飾（alt=""）とする。
+           サンプルのダミー画像なので、ホバー停止などは設けず流しっぱなしにしている。
+           各トラックは同じ6枚を2周分並べ、-50%までtranslateXすることで継ぎ目なくループする -->
+      <div class="works__collage reveal">
+        <p class="works__collage-copy">多種多様なサイト制作の実績がございます。</p>
+        <div class="works__collage-row works__collage-row--top">
+          <ul class="works__collage-track" aria-hidden="true">
+            <li class="works__collage-shot works__collage-shot--a"><img src="images/works-shot-recruit.jpg" width="478" height="326" loading="lazy" decoding="async" alt=""></li>
+            <li class="works__collage-shot works__collage-shot--b"><img src="images/works-shot-beauty.jpg" width="478" height="322" loading="lazy" decoding="async" alt=""></li>
+            <li class="works__collage-shot works__collage-shot--c"><img src="images/works-shot-ec.jpg" width="482" height="285" loading="lazy" decoding="async" alt=""></li>
+            <li class="works__collage-shot works__collage-shot--d"><img src="images/works-shot-architecture.jpg" width="473" height="256" loading="lazy" decoding="async" alt=""></li>
+            <li class="works__collage-shot works__collage-shot--e"><img src="images/works-shot-portal.jpg" width="478" height="294" loading="lazy" decoding="async" alt=""></li>
+            <li class="works__collage-shot works__collage-shot--f"><img src="images/works-shot-fortune.jpg" width="460" height="259" loading="lazy" decoding="async" alt=""></li>
+            <li class="works__collage-shot works__collage-shot--a"><img src="images/works-shot-recruit.jpg" width="478" height="326" loading="lazy" decoding="async" alt=""></li>
+            <li class="works__collage-shot works__collage-shot--b"><img src="images/works-shot-beauty.jpg" width="478" height="322" loading="lazy" decoding="async" alt=""></li>
+            <li class="works__collage-shot works__collage-shot--c"><img src="images/works-shot-ec.jpg" width="482" height="285" loading="lazy" decoding="async" alt=""></li>
+            <li class="works__collage-shot works__collage-shot--d"><img src="images/works-shot-architecture.jpg" width="473" height="256" loading="lazy" decoding="async" alt=""></li>
+            <li class="works__collage-shot works__collage-shot--e"><img src="images/works-shot-portal.jpg" width="478" height="294" loading="lazy" decoding="async" alt=""></li>
+            <li class="works__collage-shot works__collage-shot--f"><img src="images/works-shot-fortune.jpg" width="460" height="259" loading="lazy" decoding="async" alt=""></li>
+          </ul>
+        </div>
+        <div class="works__collage-row works__collage-row--bottom">
+          <ul class="works__collage-track" aria-hidden="true">
+            <li class="works__collage-shot works__collage-shot--g"><img src="images/works-shot-medical.jpg" width="478" height="323" loading="lazy" decoding="async" alt=""></li>
+            <li class="works__collage-shot works__collage-shot--h"><img src="images/works-shot-app.jpg" width="478" height="305" loading="lazy" decoding="async" alt=""></li>
+            <li class="works__collage-shot works__collage-shot--i"><img src="images/works-shot-artist.jpg" width="458" height="260" loading="lazy" decoding="async" alt=""></li>
+            <li class="works__collage-shot works__collage-shot--j"><img src="images/works-shot-ec2.jpg" width="476" height="314" loading="lazy" decoding="async" alt=""></li>
+            <li class="works__collage-shot works__collage-shot--k"><img src="images/works-shot-app2.jpg" width="474" height="333" loading="lazy" decoding="async" alt=""></li>
+            <li class="works__collage-shot works__collage-shot--l"><img src="images/works-shot-medical2.jpg" width="474" height="248" loading="lazy" decoding="async" alt=""></li>
+            <li class="works__collage-shot works__collage-shot--g"><img src="images/works-shot-medical.jpg" width="478" height="323" loading="lazy" decoding="async" alt=""></li>
+            <li class="works__collage-shot works__collage-shot--h"><img src="images/works-shot-app.jpg" width="478" height="305" loading="lazy" decoding="async" alt=""></li>
+            <li class="works__collage-shot works__collage-shot--i"><img src="images/works-shot-artist.jpg" width="458" height="260" loading="lazy" decoding="async" alt=""></li>
+            <li class="works__collage-shot works__collage-shot--j"><img src="images/works-shot-ec2.jpg" width="476" height="314" loading="lazy" decoding="async" alt=""></li>
+            <li class="works__collage-shot works__collage-shot--k"><img src="images/works-shot-app2.jpg" width="474" height="333" loading="lazy" decoding="async" alt=""></li>
+            <li class="works__collage-shot works__collage-shot--l"><img src="images/works-shot-medical2.jpg" width="474" height="248" loading="lazy" decoding="async" alt=""></li>
+          </ul>
+        </div>
+      </div>
+      <div class="works__tags-wrap reveal">
+        <ul class="works__tags" aria-label="対応ジャンル・業種">
+          <li class="works__tag">採用・求人</li>
+          <li class="works__tag">美容・サロン</li>
+          <li class="works__tag">EC・通販</li>
+          <li class="works__tag">建築・不動産</li>
+          <li class="works__tag">ポータルサイト</li>
+          <li class="works__tag">占い・スピリチュアル</li>
+          <li class="works__tag">医療・クリニック</li>
+          <li class="works__tag">アプリ・ソフトウェア</li>
+          <li class="works__tag">アーティスト・クリエイター</li>
+          <li class="works__tag">コーポレートサイト</li>
+          <li class="works__tag">飲食・カフェ</li>
+          <li class="works__tag">士業・法務</li>
+          <li class="works__tag">製造業・メーカー</li>
+          <li class="works__tags-break" aria-hidden="true"></li>
+          <li class="works__tag">神社仏閣</li>
+          <li class="works__tag">インバウンド・多言語対応</li>
+          <li class="works__tag">エンタメ・映像</li>
+          <li class="works__tag">官公庁・自治体</li>
+          <li class="works__tag">ベビー・キッズ</li>
+        </ul>
+      </div>
+      <div class="works__col-text reveal">
+        <p class="works__intro">もちろん、掲載のない業種やご要望でもご提案が可能です。</p>
+        <hr class="works__divider">
+        <p class="works__closing">実績の多くは守秘義務などの事情によりWeb上での公開ができません。<br>実績をご覧になりたい方は、お問い合わせフォームからお願いします。</p>
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSdSFUZ3bPy-wpLt6_KpEXGRpiyg-IPfHSIgzPI_nJzWggIOJw/viewform" data-contact-link target="_blank" rel="noopener noreferrer" class="works__cta-btn">お問い合わせ<span aria-hidden="true">→</span><span class="sr-only">（別タブで開きます）</span></a>
+      </div>
+    </div>
+
+    <div class="works__projects">
+      <h3 class="works__projects-heading reveal">Original Products</h3>
+      <!-- sozai/products/twoface_camp.png のデザインを忠実に再現した単体ビジュアル。
+           使用素材: tf-logo（ロゴ）/ tf-circle（背景の円）/ tf-monitor（Lightwaveデモのモニター）/
+           tf-badge-*（3つの実績バッジ、ラベル文字は画像内に焼き込み済み）。
+           紹介文・お知らせ文言は既存のTwo-Face説明文を保持し、デザインだけcampに合わせている。
+           CTAボタンのみcamp通りに新規追加（リンク先はTwo-Face本体のサービスサイト） -->
+      <div class="work-project work-project--twoface reveal">
+        <!-- 円は装飾としてカード全体に絶対配置で中央揃え。モニターはテキストと同じflex行に
+             並べて縦中央揃えにする（flexなのでスマホでは自然に縦積みできる） -->
+        <picture>
+          <source srcset="images/tf-circle.webp" type="image/webp">
+          <img src="images/tf-circle.png" alt="" aria-hidden="true" width="1200" height="1200" class="work-project__tf-circle">
+        </picture>
+        <div class="work-project__header">
+          <span class="work-project__label">ターゲット最適化・WEBサイト制作パッケージ</span>
+          <div class="work-project__brand-row">
+            <picture>
+              <source srcset="images/tf-logo.webp" type="image/webp">
+              <img src="images/tf-logo.png" alt="Two-Face" width="1200" height="400" class="work-project__brand-logo">
+            </picture>
+            <div class="work-project__note">御覧のサイトもTwo faceで作成しました</div>
+          </div>
+        </div>
+        <div class="work-project__content">
+        <div class="work-project__body">
+          <h3 class="work-project__title sr-only">Two-Face</h3>
+          <p class="work-project__desc">ユーザーの属性や訪問目的に合わせて表示内容を動的に変える、独自の制作フレームワーク。<span class="work-project__mark">「約1サイト分の制作費」</span>で、ターゲットごとの専用ページ相当を実現できます。</p>
+          <ul class="work-project__badges">
+            <li><picture><source srcset="images/tf-badge-cvr.webp" type="image/webp"><img src="images/tf-badge-cvr.png" alt="CVR改善" width="1200" height="1200"></picture></li>
+            <li class="work-project__badge-divider" aria-hidden="true"></li>
+            <li><picture><source srcset="images/tf-badge-churn.webp" type="image/webp"><img src="images/tf-badge-churn.png" alt="離脱率の低減" width="1200" height="1200"></picture></li>
+            <li class="work-project__badge-divider" aria-hidden="true"></li>
+            <li><picture><source srcset="images/tf-badge-lp.webp" type="image/webp"><img src="images/tf-badge-lp.png" alt="LPにも最適" width="1200" height="1200"></picture></li>
+          </ul>
+        </div>
+        <picture class="work-project__tf-monitor-wrap">
+          <source srcset="images/tf-monitor.webp" type="image/webp">
+          <img src="images/tf-monitor.png" alt="" aria-hidden="true" width="1047" height="831" class="work-project__tf-monitor">
+        </picture>
+        </div>
+        <a href="https://two-face.site/" target="_blank" rel="noopener noreferrer" class="work-project__cta">サービスページでもっと詳しく<span class="work-project__cta-arrow" aria-hidden="true">→</span><span class="sr-only">（別タブで開きます）</span></a>
+      </div>
+      <div class="work-project work-project--prompter reveal">
+        <span class="work-project__label">現場の課題を解決するツール</span>
+        <h3 class="work-project__title">WEBツール・小規模アプリ開発</h3>
+        <p class="work-project__desc">様々なニーズに応える、小回りの利く機能実装・ツールアプリの開発を行っています。</p>
+        <!-- 実例をさらっと紹介するだけの簡易ギャラリー。sozai/products02 の3点をそのまま使用 -->
+        <div class="work-project__showcase">
+          <p class="work-project__showcase-copy">AIエージェントを活用したバイブコーディングで実装を行っています。小さいものなら <strong>数日・数万円</strong> からご相談いただけます。</p>
+          <ul class="work-project__showcase-list">
+            <li>
+              <picture>
+                <source srcset="images/showcase-fortune.webp" type="image/webp">
+                <img src="images/showcase-fortune.jpg" alt="占いサイトの画面" width="735" height="900">
+              </picture>
+              <span>ジャンル特化型占いサイト</span>
+            </li>
+            <li>
+              <picture>
+                <source srcset="images/showcase-prompter.webp" type="image/webp">
+                <img src="images/showcase-prompter.jpg" alt="プロンプターツールの画面" width="965" height="743">
+              </picture>
+              <span>保存機能付きプロンプター</span>
+            </li>
+            <li>
+              <picture>
+                <source srcset="images/showcase-app.webp" type="image/webp">
+                <img src="images/showcase-app.jpg" alt="スマホアプリの画面" width="425" height="714">
+              </picture>
+              <span>ライフログ系スマホアプリ</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. Flow（共通） -->
+  <section class="flow" id="flow">
+    <div class="deco deco--tri-ink flow__deco-tri-ink" aria-hidden="true" data-parallax-x="-0.05" data-parallax="0.15"></div>
+    <div class="deco deco--circle-blue flow__deco-circle-blue" aria-hidden="true" data-parallax="0.6"></div>
+    <div class="deco deco--circle-yellow flow__deco-circle-yellow" aria-hidden="true" data-parallax="0.65"></div>
+    <div class="deco deco--dots flow__deco-dots-tl" aria-hidden="true" data-parallax="0.2"></div>
+    <div class="deco deco--dots flow__deco-dots-br" aria-hidden="true" data-parallax="0.2"></div>
+    <span class="deco deco--cross flow__deco-cross-l" aria-hidden="true" data-parallax="0.22"></span>
+    <span class="deco deco--cross deco--cross--sm flow__deco-cross-br" aria-hidden="true" data-parallax="0.22"></span>
+
+    <div class="section-label reveal">
+      <span class="section-label__row"><span class="section-label__num">05</span><span class="eyebrow">FLOW</span></span>
+      <span class="section-label__heading">ご相談から公開までの6STEP</span>
+    </div>
+    <p class="flow__intro reveal">全体の制作期間は、プロジェクトの規模や要件により異なりますが、目安としてランディングページ（LP）や単機能ツールは<strong>約1〜1.5ヶ月</strong>、コーポレートサイト・システム連携サイトは<strong>約2〜6ヶ月</strong>で公開まで進行します。</p>
+
+    <div class="flow__steps">
+      <div class="flow__steps-track">
+        <div class="flow__step-card">
+          <div class="flow__step-head"><span class="flow__step-num">STEP 01</span><span class="flow__step-label">お問い合わせ・<br>ヒアリング</span></div>
+          <div class="flow__step-illust"><img src="images/flow01.png" alt=""></div>
+          <p class="flow__step-headline">まずは「こんなことできる？」とお気軽にご相談ください。</p>
+          <!-- 詳細は既定で閉じておき、＋/−ボタンをクリックするとスライドして開く
+               （details/summaryなのでJS未実行でも開閉できる） -->
+          <details class="flow__step-detail">
+            <summary class="flow__step-toggle"><span class="sr-only">すべての工程の詳細を開閉する</span><span class="flow__step-toggle-label" aria-hidden="true"><span class="flow__step-toggle-label-open">open</span><span class="flow__step-toggle-label-close">close</span></span><span class="flow__step-plusminus" aria-hidden="true"></span></summary>
+            <div class="flow__step-desc-wrap">
+              <p class="flow__step-desc">専用フォームよりご連絡いただいた後、オンライン等で目的や要件、現在お困りのことなどを丁寧に整理いたします。</p>
+            </div>
+          </details>
+          <div class="flow__step-duration"><svg viewBox="0 0 24 24" fill="none"><rect x="3.5" y="5" width="17" height="15" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M3.5 9.5h17M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>目安　<strong>1〜3日</strong></span></div>
+        </div>
+        <span class="flow__step-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 2.5v19l18-9.5z" fill="currentColor"/></svg></span>
+        <div class="flow__step-card">
+          <div class="flow__step-head"><span class="flow__step-num">STEP 02</span><span class="flow__step-label">お見積り・ご提案</span></div>
+          <div class="flow__step-illust"><img src="images/flow02.png" alt=""></div>
+          <p class="flow__step-headline">最適なプランとお見積りをご提示します。（ここまでは無料です）</p>
+          <!-- 詳細は既定で閉じておき、＋/−ボタンをクリックするとスライドして開く
+               （details/summaryなのでJS未実行でも開閉できる） -->
+          <details class="flow__step-detail">
+            <summary class="flow__step-toggle"><span class="sr-only">すべての工程の詳細を開閉する</span><span class="flow__step-toggle-label" aria-hidden="true"><span class="flow__step-toggle-label-open">open</span><span class="flow__step-toggle-label-close">close</span></span><span class="flow__step-plusminus" aria-hidden="true"></span></summary>
+            <div class="flow__step-desc-wrap">
+              <p class="flow__step-desc">ヒアリング内容をもとに、必要な機能や最適な進め方をご提案します。ご納得いただけましたら正式なご発注となります。</p>
+            </div>
+          </details>
+          <div class="flow__step-duration"><svg viewBox="0 0 24 24" fill="none"><rect x="3.5" y="5" width="17" height="15" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M3.5 9.5h17M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>目安　<strong>ヒアリング後 1~2週間</strong></span></div>
+        </div>
+        <span class="flow__step-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 2.5v19l18-9.5z" fill="currentColor"/></svg></span>
+        <div class="flow__step-card">
+          <div class="flow__step-head"><span class="flow__step-num">STEP 03</span><span class="flow__step-label">サイト設計<br>（ワイヤーフレーム）</span></div>
+          <div class="flow__step-illust"><img src="images/flow03.png" alt=""></div>
+          <p class="flow__step-headline">サイトの骨組みと<br>導線を決定します。</p>
+          <!-- 詳細は既定で閉じておき、＋/−ボタンをクリックするとスライドして開く
+               （details/summaryなのでJS未実行でも開閉できる） -->
+          <details class="flow__step-detail">
+            <summary class="flow__step-toggle"><span class="sr-only">すべての工程の詳細を開閉する</span><span class="flow__step-toggle-label" aria-hidden="true"><span class="flow__step-toggle-label-open">open</span><span class="flow__step-toggle-label-close">close</span></span><span class="flow__step-plusminus" aria-hidden="true"></span></summary>
+            <div class="flow__step-desc-wrap">
+              <p class="flow__step-desc">デザイン前にサイトの設計図（ワイヤーフレーム）を作成し、文章や画像の配置を決めます。素材のご準備もこの段階からお願いいたします。</p>
+            </div>
+          </details>
+          <div class="flow__step-duration"><svg viewBox="0 0 24 24" fill="none"><rect x="3.5" y="5" width="17" height="15" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M3.5 9.5h17M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>目安　<strong>1〜2週間</strong></span></div>
+        </div>
+        <span class="flow__step-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 2.5v19l18-9.5z" fill="currentColor"/></svg></span>
+        <div class="flow__step-card">
+          <div class="flow__step-head"><span class="flow__step-num">STEP 04</span><span class="flow__step-label">デザイン制作</span></div>
+          <div class="flow__step-illust"><img src="images/flow04.png" alt=""></div>
+          <p class="flow__step-headline">実際の見た目（＝1枚の画像）としてご確認いただきます。</p>
+          <!-- 詳細は既定で閉じておき、＋/−ボタンをクリックするとスライドして開く
+               （details/summaryなのでJS未実行でも開閉できる） -->
+          <details class="flow__step-detail">
+            <summary class="flow__step-toggle"><span class="sr-only">すべての工程の詳細を開閉する</span><span class="flow__step-toggle-label" aria-hidden="true"><span class="flow__step-toggle-label-open">open</span><span class="flow__step-toggle-label-close">close</span></span><span class="flow__step-plusminus" aria-hidden="true"></span></summary>
+            <div class="flow__step-desc-wrap">
+              <p class="flow__step-desc">設計図をもとに色や写真、装飾を反映したデザインを作成します。※この段階は「一枚の画像」での確認となり、クリック等のWeb機能はまだありません。</p>
+            </div>
+          </details>
+          <div class="flow__step-duration"><svg viewBox="0 0 24 24" fill="none"><rect x="3.5" y="5" width="17" height="15" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M3.5 9.5h17M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>目安　<strong>1〜3週間</strong></span></div>
+        </div>
+        <span class="flow__step-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 2.5v19l18-9.5z" fill="currentColor"/></svg></span>
+        <div class="flow__step-card">
+          <div class="flow__step-head"><span class="flow__step-num">STEP 05</span><span class="flow__step-label">コーディング・<br>システム実装</span></div>
+          <div class="flow__step-illust"><img src="images/flow05.png" alt=""></div>
+          <p class="flow__step-headline">ブラウザで動く「本物のWebサイト」の形に組み立てます。</p>
+          <!-- 詳細は既定で閉じておき、＋/−ボタンをクリックするとスライドして開く
+               （details/summaryなのでJS未実行でも開閉できる） -->
+          <details class="flow__step-detail">
+            <summary class="flow__step-toggle"><span class="sr-only">すべての工程の詳細を開閉する</span><span class="flow__step-toggle-label" aria-hidden="true"><span class="flow__step-toggle-label-open">open</span><span class="flow__step-toggle-label-close">close</span></span><span class="flow__step-plusminus" aria-hidden="true"></span></summary>
+            <div class="flow__step-desc-wrap">
+              <p class="flow__step-desc">デザインをWebサイトとしてコーディングし、WordPress等を実装します。専用のテストURLにて、お手元のスマホやPCから実際の動きをご確認ください。</p>
+            </div>
+          </details>
+          <div class="flow__step-duration"><svg viewBox="0 0 24 24" fill="none"><rect x="3.5" y="5" width="17" height="15" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M3.5 9.5h17M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>目安　<strong>2〜4週間</strong></span></div>
+        </div>
+        <span class="flow__step-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 2.5v19l18-9.5z" fill="currentColor"/></svg></span>
+        <div class="flow__step-card">
+          <div class="flow__step-head"><span class="flow__step-num">STEP 06</span><span class="flow__step-label">サーバー設定・公開</span></div>
+          <div class="flow__step-illust"><img src="images/flow06.png" alt=""></div>
+          <p class="flow__step-headline">最終確認後、インターネット上へ公開（納品）します。</p>
+          <!-- 詳細は既定で閉じておき、＋/−ボタンをクリックするとスライドして開く
+               （details/summaryなのでJS未実行でも開閉できる） -->
+          <details class="flow__step-detail">
+            <summary class="flow__step-toggle"><span class="sr-only">すべての工程の詳細を開閉する</span><span class="flow__step-toggle-label" aria-hidden="true"><span class="flow__step-toggle-label-open">open</span><span class="flow__step-toggle-label-close">close</span></span><span class="flow__step-plusminus" aria-hidden="true"></span></summary>
+            <div class="flow__step-desc-wrap">
+              <p class="flow__step-desc">すべてのチェックが完了しましたら、ドメインやサーバーの設定を行い、本番公開となります。公開後の保守メンテナンスや機能追加なども、引き続きサポートいたします。</p>
+            </div>
+          </details>
+          <div class="flow__step-duration"><svg viewBox="0 0 24 24" fill="none"><rect x="3.5" y="5" width="17" height="15" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M3.5 9.5h17M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>目安　<strong>数日〜1週間</strong></span></div>
+        </div>
+      </div>
+    </div>
+
+    <!--
+    <div class="flow__support">
+      <div class="flow__support-head reveal">
+        <h3 class="flow__support-heading">制作にあたっての<span class="flow__support-num">3</span>つの安心</h3>
+      </div>
+      <div class="flow__support-grid">
+        <div class="flow__support-item reveal">
+          <div class="flow__support-item-head">
+            <span class="flow__support-item-num" aria-hidden="true">01</span>
+            <p class="flow__support-title">修正は3回まで無料対応</p>
+          </div>
+          <span class="flow__support-item-line" aria-hidden="true"></span>
+          <p class="flow__support-desc">デザインの修正は3回まで無料で対応させていただきます。（それ以上は追加費用が発生いたしますので、別途お見積りの上ご相談になります）</p>
+          <span class="flow__support-illust">
+            <picture>
+              <source srcset="images/flow-support03.webp" type="image/webp">
+              <img src="images/flow-support03.png" alt="" loading="lazy" decoding="async">
+            </picture>
+          </span>
+        </div>
+        <div class="flow__support-item reveal">
+          <div class="flow__support-item-head">
+            <span class="flow__support-item-num" aria-hidden="true">02</span>
+            <p class="flow__support-title">各工程ごとの丁寧な確認</p>
+          </div>
+          <span class="flow__support-item-line" aria-hidden="true"></span>
+          <p class="flow__support-desc">各工程ごとに気になる箇所の確認をお願いしていきます。気になる点は遠慮なくお気軽にお伝えください。</p>
+          <span class="flow__support-illust">
+            <picture>
+              <source srcset="images/flow-support02.webp" type="image/webp">
+              <img src="images/flow-support02.png" alt="" loading="lazy" decoding="async">
+            </picture>
+          </span>
+        </div>
+        <div class="flow__support-item reveal">
+          <div class="flow__support-item-head">
+            <span class="flow__support-item-num" aria-hidden="true">03</span>
+            <p class="flow__support-title">公開後の無料対応と継続サポート</p>
+          </div>
+          <span class="flow__support-item-line" aria-hidden="true"></span>
+          <p class="flow__support-desc">サイト公開後、1週間以内のシステム不具合は無償で修正まで承ります。長期的なプランでの継続的なサポートが可能です。</p>
+          <span class="flow__support-illust">
+            <picture>
+              <source srcset="images/flow-support01.webp" type="image/webp">
+              <img src="images/flow-support01.png" alt="" loading="lazy" decoding="async">
+            </picture>
+          </span>
+        </div>
+      </div>
+    </div>
+    -->
+
+    <div class="flow__tip reveal">
+      <p class="flow__tip-text">ご不明点やご要望は<br>いつでもご相談ください。<br>お客様のビジネスに最適なWebサイトを、丁寧に、確実にお作りします。</p>
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLSdSFUZ3bPy-wpLt6_KpEXGRpiyg-IPfHSIgzPI_nJzWggIOJw/viewform" data-contact-link target="_blank" rel="noopener noreferrer" class="btn btn--primary">無料相談・お見積りはこちら<span aria-hidden="true">→</span><span class="sr-only">（別タブで開きます）</span></a>
+    </div>
+  </section>
+
+  <!-- 8. FAQ（ターゲット別に10問ずつ出し分け。中身はmain.jsのFAQSを参照） -->
+  <section class="faq" id="faq">
+    <div class="deco deco--tri-yellow faq__deco-tri-yellow" aria-hidden="true" data-parallax-x="0.05" data-parallax="0.35"></div>
+    <div class="deco deco--dots faq__deco-dots-tl" aria-hidden="true" data-parallax="0.2"></div>
+    <div class="deco deco--dots faq__deco-dots-bl" aria-hidden="true" data-parallax="0.18"></div>
+    <span class="deco deco--cross faq__deco-cross-tr" aria-hidden="true" data-parallax="0.22"></span>
+
+    <div class="section-label reveal">
+      <span class="section-label__row"><span class="section-label__num">06</span><span class="eyebrow">FAQ</span></span>
+      <span class="section-label__heading">よくあるご質問</span>
+    </div>
+    <div class="faq__list" id="faqList"></div>
+    <div class="faq__cta reveal">
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLSdSFUZ3bPy-wpLt6_KpEXGRpiyg-IPfHSIgzPI_nJzWggIOJw/viewform" data-contact-link target="_blank" rel="noopener noreferrer" class="btn btn--primary">無料相談・お見積りはこちら<span aria-hidden="true">→</span><span class="sr-only">（別タブで開きます）</span></a>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <a href="#" class="site-logo site-logo--light site-logo--stacked">
+      <img src="images/logo-stacked-light.png" alt="Two Five create" class="site-logo__img">
+    </a>
+    <p class="site-footer__copyright">© 2026 Two Five create</p>
+    <nav class="site-footer__links">
+      <a href="#">プライバシーポリシー</a>
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLSdSFUZ3bPy-wpLt6_KpEXGRpiyg-IPfHSIgzPI_nJzWggIOJw/viewform" data-contact-link target="_blank" rel="noopener noreferrer">お問い合わせ<span class="sr-only">（別タブで開きます）</span></a>
+    </nav>
+  </div>
+</footer>
+</div>
+
+<!-- 入口モーダル：自己選択式の分岐トリガー（毎回表示・セッション保持なし） -->
+<div class="persona-modal" id="personaModal" hidden aria-hidden="true">
+  <div class="persona-modal__panel" role="dialog" aria-modal="true" aria-labelledby="personaModalTitle">
+    <button type="button" class="persona-modal__close" id="personaModalClose" aria-label="閉じる">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+    <p class="persona-modal__eyebrow">WHICH DESCRIBES YOU BEST?</p>
+    <h2 id="personaModalTitle">どちらの立場でご覧になりますか？</h2>
+    <div class="persona-modal__options">
+      <button type="button" class="persona-modal__option" data-persona="bizCompany">
+        <span class="persona-modal__option-label">事業会社様（自社サイトの構築・運用）</span>
+        <span class="persona-modal__option-sub">制作会社より柔軟に、フリーランスより堅実に。</span>
+      </button>
+      <button type="button" class="persona-modal__option" data-persona="partner">
+        <span class="persona-modal__option-label">制作パートナーをお探しの方（デザイナー・制作会社様）</span>
+        <span class="persona-modal__option-sub">デザインも、急な対応も。崩さず、確かな技術力で拾います。</span>
+      </button>
+      <button type="button" class="persona-modal__option" data-persona="aiOps">
+        <span class="persona-modal__option-label">AI業務改善をお考えの方</span>
+        <span class="persona-modal__option-sub">15年以上、様々な現場を見てきたからこそ、業務課題が見えます。</span>
+      </button>
+    </div>
+    <button type="button" class="persona-modal__skip" id="personaSkip">あとで選ぶ（事業会社様向け表示のまま見る）</button>
+  </div>
+</div>
+
+<script src="js/main.js"></script>
+</body>
+</html>
