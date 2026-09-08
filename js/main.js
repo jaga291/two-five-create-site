@@ -293,22 +293,24 @@ function switchPersonaWithTransition(id) {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-document.querySelectorAll(".persona-modal__option").forEach((btn) => {
-  btn.addEventListener("click", () => {
-    switchPersonaWithTransition(btn.dataset.persona);
-  });
-});
-
-on("personaSkip", "click", hideModal);
-on("personaModalClose", "click", hideModal);
-on("personaModal", "click", (e) => {
-  if (e.target === e.currentTarget) hideModal();
-});
-on("switchPersona", "click", showModal);
-on("switchPersonaDrawer", "click", () => {
-  closeDrawer();
-  showModal();
-});
+// ペルソナ切替機能：いったん無効化（差別化が薄く、早期公開のため）。
+// HTML側のボタン・モーダルもコメントアウト済み。再開時は両方のコメントを外すだけでOK
+// document.querySelectorAll(".persona-modal__option").forEach((btn) => {
+//   btn.addEventListener("click", () => {
+//     switchPersonaWithTransition(btn.dataset.persona);
+//   });
+// });
+//
+// on("personaSkip", "click", hideModal);
+// on("personaModalClose", "click", hideModal);
+// on("personaModal", "click", (e) => {
+//   if (e.target === e.currentTarget) hideModal();
+// });
+// on("switchPersona", "click", showModal);
+// on("switchPersonaDrawer", "click", () => {
+//   closeDrawer();
+//   showModal();
+// });
 
 // お問い合わせリンクのURLを一元適用する。
 // HTML側にも同じ実URLが書いてあるためJS無効でも機能する（ここは変更を1箇所に集約するための上書き）。
@@ -322,9 +324,11 @@ document.querySelectorAll("[data-contact-link]").forEach((el) => {
 // （Two-Faceの実演も兼ねるため、Lightwaveと異なりセッション内保持は行わない）
 applyPersona(DEFAULT_PERSONA);
 renderFaq(DEFAULT_PERSONA, { animate: true });
-if (!location.hash) {
-  showModal();
-}
+// ペルソナ切替機能：いったん無効化（早期公開のため、事業会社様向け表示に固定）。
+// 再開時はコメントを外すだけでOK
+// if (!location.hash) {
+//   showModal();
+// }
 
 // スクロール連動フェードイン：画面に入ったら .is-visible を付与し、以降は監視解除
 document.querySelectorAll(".reveal").forEach((el) => observeReveal(el));

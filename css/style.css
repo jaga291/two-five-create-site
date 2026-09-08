@@ -210,6 +210,7 @@ h1, h2, h3, p { margin: 0; }
    同じ30pxだと潰れて読めなくなる。専用に高さを大きく取る */
 .site-footer .site-logo--stacked .site-logo__img { height: 78px; }
 
+/* ペルソナ切替機能：いったん無効化（差別化が薄く、早期公開のため）。再開時はコメントを外すだけでOK
 .persona-badge {
   font-size: 0.72rem;
   font-weight: 700;
@@ -219,6 +220,7 @@ h1, h2, h3, p { margin: 0; }
   background: var(--accent);
   color: var(--white);
 }
+*/
 
 /* デスクトップ用ホバーフライアウトメニュー：ハンバーガーにマウスオーバーすると右側から縦並びのメニューが現れる */
 .nav-flyout { position: relative; height: 100%; display: flex; align-items: center; }
@@ -287,6 +289,7 @@ h1, h2, h3, p { margin: 0; }
 }
 .site-nav a:hover { color: var(--yellow-deep); background: rgba(28, 28, 28, 0.04); }
 .site-nav a:hover::after { width: calc(100% - 3.6rem); }
+/* ペルソナ切替機能：いったん無効化（差別化が薄く、早期公開のため）。再開時はコメントを外すだけでOK
 .site-nav__action {
   display: block;
   width: 100%;
@@ -302,6 +305,7 @@ h1, h2, h3, p { margin: 0; }
   transition: color 0.25s ease, background-color 0.25s ease;
 }
 .site-nav__action:hover { color: var(--yellow-deep); background: rgba(28, 28, 28, 0.04); }
+*/
 
 /* 常時表示メニューは、5項目+「表示を切り替える」+お問い合わせボタンが1行に収まる
    実測の最小幅（1100〜1150pxで折り返しが発生）を踏まえて1180px以上に限定する。
@@ -326,6 +330,7 @@ h1, h2, h3, p { margin: 0; }
   .site-nav a { padding: 0.5rem 0.85rem; font-size: 0.88rem; }
   .site-nav a::after { left: 0.85rem; }
   .site-nav a:hover::after { width: calc(100% - 1.7rem); }
+  /* ペルソナ切替機能：いったん無効化（再開時はコメントを外すだけでOK）
   .site-nav__action {
     display: block;
     width: auto;
@@ -334,6 +339,7 @@ h1, h2, h3, p { margin: 0; }
     margin-top: 0;
     margin-left: 0.4rem;
   }
+  */
   /* スクロール連動で現在地セクションに付くマーカー（main.jsのIntersectionObserverが.is-activeを切り替える） */
   .site-nav a.is-active { color: var(--yellow-deep); }
   .site-nav a.is-active::after { width: calc(100% - 1.7rem); }
@@ -390,6 +396,7 @@ h1, h2, h3, p { margin: 0; }
 .drawer.is-open { transform: translateX(0); }
 .drawer a { font-size: 1rem; font-weight: 500; }
 .drawer .btn { width: fit-content; }
+/* ペルソナ切替機能：いったん無効化（差別化が薄く、早期公開のため）。再開時はコメントを外すだけでOK
 .drawer__persona-switch {
   margin-top: auto;
   background: transparent;
@@ -398,6 +405,7 @@ h1, h2, h3, p { margin: 0; }
   padding: 0.8em 1.4em;
   border-radius: 999px;
 }
+*/
 
 /* Floating buttons */
 .back-to-top {
@@ -425,7 +433,9 @@ h1, h2, h3, p { margin: 0; }
 
 /* ==========================================================================
    Persona modal
+   ペルソナ切替機能：いったん無効化（差別化が薄く、早期公開のため）。再開時はコメントを外すだけでOK
    ========================================================================== */
+/*
 .persona-modal {
   position: fixed; inset: 0;
   z-index: 200;
@@ -499,6 +509,7 @@ h1, h2, h3, p { margin: 0; }
   color: #6b6b6b;
   text-decoration: underline;
 }
+*/
 
 /* ==========================================================================
    Hero
@@ -1931,7 +1942,9 @@ h1, h2, h3, p { margin: 0; }
 /* ==========================================================================
    persona切り替え時のフェード
    ========================================================================== */
+/* ペルソナ切替機能：いったん無効化（再開時はコメントを外すだけでOK）
 main.persona-transition { opacity: 0; transition: opacity 0.25s ease; }
+*/
 
 /* ==========================================================================
    Responsive
