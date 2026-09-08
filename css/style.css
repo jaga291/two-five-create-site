@@ -970,6 +970,8 @@ h1, h2, h3, p { margin: 0; }
 .service-row--quad {
   grid-template-columns: repeat(4, 1fr);
   background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url("../images/service06.jpg") center/cover no-repeat;
+  /* image-set()未対応ブラウザは上のurl()指定のまま残る（無効な値は無視される仕様を利用したフォールバック） */
+  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), image-set(url("../images/service06.webp") type("image/webp"), url("../images/service06.jpg") type("image/jpeg")) center/cover no-repeat;
 }
 .service-row--quad .service-row__col--text-only {
   display: block;
