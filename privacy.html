@@ -46,6 +46,16 @@
 </head>
 <body>
 
+<div id="loadingScreen" class="loading-screen" role="status" aria-live="polite">
+  <div class="loading-screen__inner">
+    <picture>
+      <source srcset="images/loading-dog.webp" type="image/webp">
+      <img src="images/loading-dog.png" alt="" class="loading-screen__dog">
+    </picture>
+    <p class="loading-screen__text">Loading<span class="loading-screen__dots" aria-hidden="true"></span></p>
+  </div>
+</div>
+
 <div id="appRoot">
 <header class="site-header">
   <div class="site-header__inner">

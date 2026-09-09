@@ -41,6 +41,59 @@ button { font: inherit; cursor: pointer; }
 ul { margin: 0; padding: 0; list-style: none; }
 h1, h2, h3, p { margin: 0; }
 
+/* ==========================================================================
+   Loading screen — 初回表示時に最低3秒表示するローディング演出（js/main.jsが制御）
+   ========================================================================== */
+.loading-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--paper);
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+.loading-screen.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.loading-screen__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+.loading-screen__dog {
+  width: 100px;
+  height: auto;
+}
+.loading-screen__text {
+  font-family: var(--font-tagline);
+  font-style: italic;
+  font-weight: 500;
+  font-size: 1.15rem;
+  letter-spacing: 0.04em;
+  color: var(--ink);
+}
+.loading-screen__dots::after {
+  content: "...";
+  display: inline-block;
+  width: 1.2em;
+  overflow: hidden;
+  vertical-align: bottom;
+  white-space: nowrap;
+  animation: loadingDots 2.8s steps(4, end) infinite;
+}
+@keyframes loadingDots {
+  0% { width: 0; }
+  100% { width: 1.2em; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .loading-screen__dots::after { animation: none; width: 1.2em; }
+}
+
 /* 視覚的には隠すが支援技術には読み上げさせるテキスト（別タブで開く旨の注記などに使う） */
 .sr-only {
   position: absolute;
@@ -133,7 +186,7 @@ h1, h2, h3, p { margin: 0; }
 .section-label {
   display: flex;
   flex-direction: column;
-  margin-bottom: 3.4rem;
+  margin-bottom: 4.4rem;
 }
 .section-label__row {
   display: flex;
@@ -1028,6 +1081,7 @@ h1, h2, h3, p { margin: 0; }
 .service-row--quad .service__title {
   font-size: 1.4rem;
   color: var(--white);
+  margin-top: 0.8rem;
   /* 1行の見出しと2行の見出しが混在すると、その下の本文の開始位置が段でずれる。
      常に2行分の高さを確保し、その中で上下中央に置くことで4つの本文を揃える */
   line-height: 1.75;
@@ -1037,7 +1091,8 @@ h1, h2, h3, p { margin: 0; }
   justify-content: center;
   align-items: center;
 }
-.service-row--quad .service__desc { color: rgba(255, 255, 255, 0.78); text-align: left; }
+.service-row--quad .service__desc { color: rgba(255, 255, 255, 0.78); text-align: center; }
+.service-row--quad .service__tags { justify-content: center; }
 /* 03〜06は写真の上に直接文字が乗るため、写真の明るい部分に重なると読みにくくなる。
    広めのぼかしで文字の周囲だけをうっすら暗く落とし、輪郭用に弱い影を重ねて可読性を上げる。
    01・02は白背景の上なので影は付けない（濁って見えるだけで効果がない） */
@@ -1099,7 +1154,7 @@ h1, h2, h3, p { margin: 0; }
 }
 .service__icon img { width: 100%; height: 100%; object-fit: contain; }
 .service__title { font-weight: 700; font-size: 1.8rem; margin-bottom: 1.3rem; }
-.service__desc { font-size: 1rem; color: #555; }
+.service__desc { font-size: 1rem; color: #555; margin: 1.4rem 0; }
 /* サービスの守備範囲をひと目で示すキーワード。実績セクションのタグピルと同じ語彙で揃える。
    文字サイズは0.875rem（14px）＝coding-notes標準仕様10で許容される下限 */
 .service__tags {
@@ -2172,10 +2227,13 @@ main.persona-transition { opacity: 0; transition: opacity 0.25s ease; }
     min-height: 0;
     font-size: 1.4rem;
     line-height: 1.35;
+    margin-top: 0;
     display: block;
     text-align: left;
   }
   .service-row--quad .service-row__col--text-only .service-row__text { text-align: left; }
+  .service-row--quad .service__desc { text-align: left; }
+  .service-row--quad .service__tags { justify-content: flex-start; }
   .service-row--quad .service-row__col--text-only { border-left: none; }
   .service-row--quad .service-row__col--text-only:nth-child(n+2) { border-top: 1px solid rgba(255, 255, 255, 0.15); }
   .service-row--quad .service-row__col--text-only:first-child { border-top: none; }

@@ -770,3 +770,23 @@ if (fvClock) {
     window.setInterval(renderClock, 60000);
   }, (60 - new Date().getSeconds()) * 1000);
 }
+
+// ローディング画面：ページの読み込み完了を待ちつつ、最低3秒は表示してからフェードアウトする
+const loadingScreen = byId("loadingScreen");
+if (loadingScreen) {
+  const LOADING_MIN_MS = 3000;
+  const loadingStart = performance.now();
+  const hideLoadingScreen = () => {
+    const remaining = Math.max(0, LOADING_MIN_MS - (performance.now() - loadingStart));
+    window.setTimeout(() => {
+      loadingScreen.classList.add("is-hidden");
+      // フェードアウト完了後にDOM上から隠し、支援技術やタブ移動の対象から外す
+      window.setTimeout(() => loadingScreen.setAttribute("hidden", ""), 500);
+    }, remaining);
+  };
+  if (document.readyState === "complete") {
+    hideLoadingScreen();
+  } else {
+    window.addEventListener("load", hideLoadingScreen, { once: true });
+  }
+}
