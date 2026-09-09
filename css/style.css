@@ -28,13 +28,17 @@ html {
 }
 body {
   margin: 0;
-  overflow-x: hidden;
   font-family: var(--font-jp);
   color: var(--ink);
   background: var(--paper);
   line-height: 1.75;
   -webkit-font-smoothing: antialiased;
 }
+/* 横スクロール抑止はhtml/bodyではなく#appRoot（ただのdiv）に付ける。
+   html・bodyはiOS Safari側で特別扱いされており、どちらにoverflow-x:hiddenを
+   付けてもスクロール終端で余白ができたりposition:fixed要素が位置ズレしたりする
+   実機不具合があったため、無関係な#appRootに逃がして両方回避する */
+#appRoot { overflow-x: hidden; }
 img, svg { display: block; max-width: 100%; }
 a { color: inherit; text-decoration: none; }
 button { font: inherit; cursor: pointer; }
@@ -471,7 +475,7 @@ h1, h2, h3, p { margin: 0; }
 .drawer {
   position: fixed;
   top: 0; right: 0;
-  width: min(320px, 84vw);
+  width: min(320px, 60vw);
   height: 100vh;
   background: var(--ink);
   color: var(--white);
@@ -1211,7 +1215,7 @@ h1, h2, h3, p { margin: 0; }
    Works
    ========================================================================== */
 /* overflow:hidden を付けるとセクションの箱で装飾図形が断ち切られ、セクションの継ぎ目が線として見えてしまう。
-   はみ出しは body 側の overflow-x:hidden に任せ、図形が隣接セクションへ自然に流れ込むようにする */
+   はみ出しは html 側の overflow-x:hidden に任せ、図形が隣接セクションへ自然に流れ込むようにする */
 .works { position: relative; background: #f5f0ec; color: var(--ink); padding: 5rem 1.5rem 8rem; }
 
 /* 背景装飾：左側に統一（主役＝左上のティール円＋黒三角、副＝左下の黄三角＋黄円）。
@@ -1256,7 +1260,7 @@ h1, h2, h3, p { margin: 0; }
    position:absoluteで独立させて中央に浮かせる。コピーの真下にも帯が通っているので、
    半透明背景ごしにスクショが透けて見える。
    ダミー画像なのでホバー停止は設けず流しっぱなしにする（prefers-reduced-motionのみ考慮）。
-   はみ出しは body 側の overflow-x:hidden に任せて画面端まで届かせる */
+   はみ出しは html 側の overflow-x:hidden に任せて画面端まで届かせる */
 .works__collage {
   position: relative;
   width: 100vw;
@@ -1266,7 +1270,7 @@ h1, h2, h3, p { margin: 0; }
   display: flex;
   flex-direction: column;
   gap: 0.7rem;
-  /* トラックはwidth:max-contentで画面幅を大きく超えるため、body側のoverflow-x:hiddenだけに
+  /* トラックはwidth:max-contentで画面幅を大きく超えるため、html側のoverflow-x:hiddenだけに
      頼らずこの箱自体でも切り取る（iOS Safariのラバーバンドスクロールでbody側だけだと
      はみ出しが見えることがある） */
   overflow: hidden;
@@ -1543,7 +1547,8 @@ h1, h2, h3, p { margin: 0; }
 .work-project--twoface .work-project__note {
   position: relative;
   isolation: isolate;
-  display: inline-flex;
+  /* いったん非表示（表示再開時は none を inline-flex に戻すだけでよい） */
+  display: none;
   align-items: center;
   gap: 0.5rem;
   margin-top: 0;
@@ -1640,7 +1645,7 @@ h1, h2, h3, p { margin: 0; }
    Flow
    ========================================================================== */
 /* overflow:hidden を使うと max-width:1280px の外側で装飾が切れてしまうため、
-   はみ出しは body 側の overflow-x:hidden に任せて画面端まで届かせる */
+   はみ出しは html 側の overflow-x:hidden に任せて画面端まで届かせる */
 /* 隣接セクションから流れ込む図形が見出しに達しないよう、継ぎ目側の余白を厚めに取る */
 .flow { position: relative; padding: 9rem 1.5rem 8rem; max-width: 1280px; margin: 0 auto; }
 
@@ -1920,7 +1925,7 @@ h1, h2, h3, p { margin: 0; }
    FAQ
    ========================================================================== */
 /* overflow:hidden を使うと max-width:1280px の外側で装飾が切れてしまうため、
-   はみ出しは body 側の overflow-x:hidden に任せて画面端まで届かせる */
+   はみ出しは html 側の overflow-x:hidden に任せて画面端まで届かせる */
 .faq { position: relative; max-width: 1280px; margin: 0 auto; padding: 9rem 1.5rem 7rem; }
 .faq__list { max-width: 900px; margin: 0 auto; }
 .faq__cta { position: relative; z-index: 1; display: flex; justify-content: center; margin-top: 6.2rem; }
@@ -2081,7 +2086,7 @@ main.persona-transition { opacity: 0; transition: opacity 0.25s ease; }
   /* スマホでは 英語コピー→モック画像→日本語コピー→ボタン の順にしたい。
      tagline/headline/ctaは.hero__textの子なので、.hero__textをdisplay:contentsで消して
      .hero__inner配下に展開し、4要素をorderで並べ替える */
-  .hero { padding: 1.2rem 0 2rem; }
+  .hero { padding: 2.2rem 0 2rem; }
   .hero__dots { top: 22%; right: 2%; width: 103px; height: 70px; }
   .hero__dots--bottom { width: 70px; height: 70px; }
   /* 左paddingを詰めてテキストを画面端寄りにする */
@@ -2089,7 +2094,7 @@ main.persona-transition { opacity: 0; transition: opacity 0.25s ease; }
   .hero__text { display: contents; }
   /* ファーストビューに収めたいので、英語コピーとモック画像の間はギリギリまで詰める（少し重ねる） */
   .hero__tagline { order: 1; margin-bottom: 0.8rem; position: relative; z-index: 1; }
-  .hero__headline { order: 3; font-size: clamp(1.2rem, 3.38vw, 3.15rem); text-align: center; margin-top: 24px; }
+  .hero__headline { order: 3; font-size: clamp(1.4rem, 3.38vw, 3.15rem); text-align: center; margin-top: 24px; }
   .hero__graphic {
     order: 2;
     min-height: 0;
@@ -2106,12 +2111,14 @@ main.persona-transition { opacity: 0; transition: opacity 0.25s ease; }
   .hero__graphic-blob { width: 20vw; height: 20vw; right: 41vw; top: 40vw; bottom: auto; }
   .hero__device { width: 66vw; max-width: 66vw; }
   /* スマホでは上下の余白が間延びして見えるため、セクションごとにかなり詰める */
-  .why { padding: 3.5rem 1.5rem; }
+  .why { padding: 3.5rem 1.3rem; }
   .services { padding: 3rem 0 1.5rem; }
-  .works { padding: 3rem 1.5rem 4rem; }
-  .flow { padding: 3.5rem 1.5rem; }
-  .profile { padding: 3.5rem 1.5rem; }
-  .faq { padding: 3.5rem 1.5rem 3rem; }
+  .services > .section-label { padding: 0 1.3rem; }
+  .works { padding: 3rem 1.3rem 4rem; }
+  .flow { padding: 3.5rem 1.3rem; }
+  .profile { padding: 3.5rem 1.3rem; }
+  .faq { padding: 3.5rem 1.3rem 3rem; }
+  .section-label { margin-bottom: 2.4rem; }
   /* 神社仏閣をPC3段目の先頭に固定するための強制改行だが、スマホでは行数が
      増えて縦に伸びる原因になるだけなので無効化し、自然な折り返しに任せる */
   .works__tags-break { display: none; }
@@ -2125,13 +2132,13 @@ main.persona-transition { opacity: 0; transition: opacity 0.25s ease; }
      profile__textをdisplay:contentsで解除し、子要素をprofile__grid直下の
      グリッドアイテムとしてそれぞれ配置し直す */
   .profile__grid {
-    grid-template-columns: 170px 1fr;
+    grid-template-columns: 130px 1fr;
     column-gap: 1.1rem;
     row-gap: 1.3rem;
     align-items: center;
   }
   /* イラストは本文より目立ちすぎないよう、PC時の約半分の大きさに縮小 */
-  .profile__photo { max-width: 170px; margin: 0; grid-column: 1; grid-row: 1; }
+  .profile__photo { max-width: 130px; margin: 0; grid-column: 1; grid-row: 1; }
   .profile__text { display: contents; }
   .profile__lead { grid-column: 2; grid-row: 1; margin: 0; }
   .profile__name { margin-bottom:0; grid-column: 1 / -1; grid-row: 2; }
@@ -2176,7 +2183,7 @@ main.persona-transition { opacity: 0; transition: opacity 0.25s ease; }
   .work-project--twoface .work-project__body { flex: 1 1 auto; max-width: 100%; }
   /* スマホ幅は1カラムなので、ロゴ+吹き出しも画面幅に応じて折り返し可能にする */
   .work-project__brand-row { width: auto; max-width: 100%; flex-wrap: wrap; margin-bottom: 1.2rem; }
-  .work-project__brand-logo { width: 150px; }
+  .work-project__brand-logo { width: 100%; height: auto; }
   .work-project--twoface .work-project__note { font-size: 0.8rem; padding: 0.6rem 0.9rem; }
   .work-project--twoface .work-project__label { font-size: 0.98rem; margin-bottom: 0; }
   .work-project--twoface .work-project__title { font-size: 2.1rem; margin-bottom: 0.8rem; }
@@ -2210,6 +2217,7 @@ main.persona-transition { opacity: 0; transition: opacity 0.25s ease; }
   .section-heading { font-size: 1.375rem; }
   .section-heading br:first-of-type { display: inline; }
   .flow__tip-text br:first-of-type { display: inline; }
+  .faq__item { padding: 0.8rem; }
   .faq__item summary { font-size: 1rem; }
   .why__title { font-size: 1.2rem; }
   .service-row__text { padding: 2.2rem 1.5rem 2.8rem; }
@@ -2270,7 +2278,7 @@ main.persona-transition { opacity: 0; transition: opacity 0.25s ease; }
     border-color: rgba(255, 255, 255, 0.32);
     color: var(--white);
   }
-  .work-project__title { font-size: 1.55rem; }
+  .work-project__title { margin-bottom: 1rem; font-size: 1.55rem; }
   .flow__step-card { flex-basis: 68vw; padding: 0.78rem 0.9rem 1.8rem; }
   .flow__step-arrow { display: none; }
 
