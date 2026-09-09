@@ -56,7 +56,9 @@
   </div>
 </div>
 
-<div id="appRoot">
+<!-- .site-headerはposition:sticky。#appRootにoverflow-x:hidden（実機不具合対策、coding-notes参照）を
+     付けているため、その内側に置くとstickyの基準祖先がappRootになり天面固定が効かなくなる。
+     そのためheaderだけappRootの外（bodyの直下）に置く -->
 <header class="site-header">
   <div class="site-header__inner">
     <div class="site-header__brand">
@@ -88,6 +90,7 @@
   </div>
 </header>
 
+<div id="appRoot">
 <div class="drawer-overlay" id="drawerOverlay"></div>
 <nav class="drawer" id="mobileDrawer" aria-hidden="true" inert>
   <a href="index.html#profile">プロフィール</a>
