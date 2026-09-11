@@ -2337,3 +2337,120 @@ main.persona-transition { opacity: 0; transition: opacity 0.25s ease; }
   .legal { padding: 3rem 1.25rem 5rem; }
   .legal h1 { margin-bottom: 2rem; }
 }
+
+/* ==========================================================================
+   隠し要素：コナミコマンド（↑↑↓↓←→←→BA）入力で発火するイースターエッグ
+   実際の画面をスクリーンショットするわけではなく、paper色のタイルを疑似的に
+   砕いて黒背景を露出させる演出。タイル生成・アニメーション制御はjs/main.js側
+   ========================================================================== */
+.konami-egg {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  overflow: hidden;
+  background: #000;
+}
+.konami-egg[hidden] { display: none; }
+.konami-egg__shards {
+  position: absolute;
+  inset: 0;
+}
+.konami-shard {
+  position: absolute;
+  background: var(--paper);
+  box-shadow: 0 0 0 1px rgba(28, 28, 28, 0.12) inset;
+  animation-name: konamiShatter;
+  animation-duration: 0.75s;
+  animation-timing-function: cubic-bezier(0.55, 0, 0.85, 0.2);
+  animation-fill-mode: forwards;
+}
+@keyframes konamiShatter {
+  0% { transform: translate(0, 0) rotate(0deg) scale(1); opacity: 1; }
+  70% { opacity: 1; }
+  100% { transform: translate(var(--tx, 0), var(--ty, 0)) rotate(var(--rot, 0deg)) scale(0.5); opacity: 0; }
+}
+/* 「元に戻す」時：同じキーフレームを逆再生し、散らばった破片が中央に集まって
+   画面を覆う＝クラッシュの逆再生に見せる。both指定で開始前は散った状態、
+   終了後は組み上がった状態をそれぞれ保持する */
+.konami-shard--reverse {
+  animation-direction: reverse;
+  animation-fill-mode: both;
+}
+.konami-egg__message {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  pointer-events: none;
+  transition: opacity 0.32s ease;
+}
+.konami-egg.is-revealed .konami-egg__message {
+  pointer-events: auto;
+}
+.konami-egg.is-closing .konami-egg__message {
+  opacity: 0;
+  pointer-events: none;
+}
+.konami-egg__text {
+  writing-mode: vertical-rl;
+  /* height:max-content はブロックサイズのキーワードとしてエンジンによって
+     縦書きレイアウトで正しく計算されないことがあり、flexコンテナの高さを基準に
+     折り返されて2列に割れてしまう。white-space:nowrapで折り返し自体を止める */
+  white-space: nowrap;
+  font-family: "Noto Serif JP", "Hiragino Mincho ProN", serif;
+  font-weight: 500;
+  color: var(--white);
+  /* 画面の縦幅に応じて可変（vh基準）にし、縦に短い画面でも収まるようにする */
+  font-size: clamp(0.95rem, 3vh, 2rem);
+  letter-spacing: 0.3em;
+  line-height: 2;
+  margin: 0;
+}
+/* 1文字ずつ<span>に分割し（js/main.js側で生成）、先頭（上）の文字から順に
+   フェード＋わずかに上から降りてくるアニメーションで表示する */
+.konami-egg__char {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(-0.6em);
+}
+.konami-egg.is-revealed .konami-egg__char {
+  animation: konamiCharIn 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-delay: var(--char-delay, 0s);
+}
+@keyframes konamiCharIn {
+  0% { opacity: 0; transform: translateY(-0.6em); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.konami-egg__restore {
+  position: absolute;
+  left: clamp(1rem, 5vw, 2.5rem);
+  bottom: clamp(1.2rem, 6vh, 3rem);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: rgba(255, 255, 255, 0.7);
+  font-family: var(--font-jp);
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+  cursor: pointer;
+  outline: none;
+  opacity: 0;
+  /* 文字が出そろった頃にふわっと現れる（遅延はjs/main.js側で文字数に応じて設定） */
+  transition: opacity 1s ease, color 0.2s ease;
+}
+.konami-egg.is-revealed .konami-egg__restore {
+  opacity: 1;
+}
+.konami-egg__restore:hover,
+.konami-egg__restore:focus-visible {
+  color: var(--white);
+}
+@media (prefers-reduced-motion: reduce) {
+  .konami-shard { animation: none; opacity: 0; }
+  .konami-egg__char { animation: none; opacity: 1; transform: none; }
+  .konami-egg__restore { transition: none; }
+}

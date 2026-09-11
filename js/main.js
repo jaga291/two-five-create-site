@@ -790,3 +790,170 @@ if (loadingScreen) {
     window.addEventListener("load", hideLoadingScreen, { once: true });
   }
 }
+
+// ==========================================================================
+// 隠し要素：コナミコマンド（↑↑↓↓←→←→BA）でシャター演出＋縦書きメッセージを表示する
+// ==========================================================================
+const konamiEgg = byId("konamiEgg");
+const konamiShardsRoot = byId("konamiShards");
+const konamiRestoreBtn = byId("konamiRestore");
+
+if (konamiEgg && konamiShardsRoot && konamiRestoreBtn) {
+  const KONAMI_SEQUENCE = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", "KeyB", "KeyA"];
+  // 破片を細かくするため、セルを縦横に分割したうえで各セルをさらに対角線で2枚の三角形に割る
+  const KONAMI_SHARD_COLS = 12;
+  const KONAMI_SHARD_ROWS = 9;
+  const KONAMI_SHATTER_MS = 750;
+  const KONAMI_SHATTER_MAX_DELAY_MS = 350;
+  const KONAMI_REVEAL_PAUSE_MS = 650;
+  const KONAMI_CLOSE_FADE_MS = 320;
+  const KONAMI_CLOSE_HOLD_MS = 150;
+  // メッセージは1文字ずつ上（先頭）から順にフェード＋スライドインさせる
+  const KONAMI_CHAR_STAGGER_MS = 170;
+  const KONAMI_CHAR_ANIM_MS = 900;
+  const konamiPrefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // メッセージ本文を1文字ずつ<span>に分割し、各文字にアニメーション開始の遅延を仕込んでおく
+  const konamiTextEl = konamiEgg.querySelector(".konami-egg__text");
+  if (konamiTextEl) {
+    const chars = Array.from(konamiTextEl.textContent);
+    konamiTextEl.textContent = "";
+    chars.forEach((ch, i) => {
+      const span = document.createElement("span");
+      span.className = "konami-egg__char";
+      span.textContent = ch;
+      span.style.setProperty("--char-delay", i * KONAMI_CHAR_STAGGER_MS + "ms");
+      konamiTextEl.appendChild(span);
+    });
+    // 「元に戻す」は文字が出そろったタイミングに合わせてふわっと現れさせる
+    const lastCharDelayMs = Math.max(0, chars.length - 1) * KONAMI_CHAR_STAGGER_MS;
+    konamiRestoreBtn.style.transitionDelay = lastCharDelayMs + KONAMI_CHAR_ANIM_MS - 150 + "ms";
+  }
+
+  let konamiInputIndex = 0;
+  let konamiOpen = false;
+  let konamiClosing = false;
+  let lastFocusedBeforeKonami = null;
+
+  // reverse=trueのときは同じ破片アニメーションをCSS側で逆再生し、砕け散った破片が
+  // 中央に集まって画面が元通りになる「クラッシュの逆再生」を作る
+  function buildKonamiShards(reverse) {
+    const frag = document.createDocumentFragment();
+    for (let r = 0; r < KONAMI_SHARD_ROWS; r++) {
+      for (let c = 0; c < KONAMI_SHARD_COLS; c++) {
+        const left = (c / KONAMI_SHARD_COLS) * 100;
+        const top = (r / KONAMI_SHARD_ROWS) * 100;
+        const w = 100 / KONAMI_SHARD_COLS;
+        const h = 100 / KONAMI_SHARD_ROWS;
+        // セルを対角線で2枚の三角形に割る。割る向きはセルごとにランダムにして単調さを消す
+        const reversedSplit = Math.random() < 0.5;
+        const triangles = reversedSplit
+          ? ["polygon(0% 0%, 100% 0%, 0% 100%)", "polygon(100% 0%, 100% 100%, 0% 100%)"]
+          : ["polygon(0% 0%, 100% 0%, 100% 100%)", "polygon(0% 0%, 100% 100%, 0% 100%)"];
+        triangles.forEach((clipPath) => {
+          const shard = document.createElement("div");
+          shard.className = reverse ? "konami-shard konami-shard--reverse" : "konami-shard";
+          shard.style.left = left + "%";
+          shard.style.top = top + "%";
+          shard.style.width = w + "%";
+          shard.style.height = h + "%";
+          shard.style.clipPath = clipPath;
+          const angle = Math.random() * Math.PI * 2;
+          const distance = 55 + Math.random() * 85;
+          shard.style.setProperty("--tx", (Math.cos(angle) * distance).toFixed(1) + "vw");
+          shard.style.setProperty("--ty", (Math.sin(angle) * distance).toFixed(1) + "vh");
+          shard.style.setProperty("--rot", ((Math.random() - 0.5) * 720).toFixed(0) + "deg");
+          shard.style.animationDelay = (Math.random() * (KONAMI_SHATTER_MAX_DELAY_MS / 1000)).toFixed(2) + "s";
+          frag.appendChild(shard);
+        });
+      }
+    }
+    konamiShardsRoot.appendChild(frag);
+  }
+
+  function openKonamiEgg() {
+    if (konamiOpen || konamiClosing) return;
+    konamiOpen = true;
+    lastFocusedBeforeKonami = document.activeElement;
+    konamiEgg.hidden = false;
+    document.body.style.overflow = "hidden";
+    if (appRoot) appRoot.inert = true;
+    const header = document.querySelector(".site-header");
+    if (header) header.inert = true;
+
+    const revealMessage = () => {
+      konamiEgg.classList.add("is-revealed");
+      konamiRestoreBtn.focus();
+    };
+
+    if (konamiPrefersReducedMotion) {
+      window.setTimeout(revealMessage, 200);
+      return;
+    }
+
+    buildKonamiShards();
+    window.setTimeout(() => {
+      konamiShardsRoot.replaceChildren();
+      // 画面が真っ暗になってから少し間を置いてメッセージを出す
+      window.setTimeout(revealMessage, KONAMI_REVEAL_PAUSE_MS);
+    }, KONAMI_SHATTER_MS + KONAMI_SHATTER_MAX_DELAY_MS + 100);
+  }
+
+  function closeKonamiEgg() {
+    if (!konamiOpen || konamiClosing) return;
+    konamiClosing = true;
+
+    const finishClose = () => {
+      konamiEgg.classList.remove("is-revealed", "is-closing");
+      konamiEgg.hidden = true;
+      konamiShardsRoot.replaceChildren();
+      document.body.style.overflow = "";
+      if (appRoot) appRoot.inert = false;
+      const header = document.querySelector(".site-header");
+      if (header) header.inert = false;
+      // scroll-behavior:smoothだと戻る動きが見えてしまうため、一瞬だけ無効化して即座にトップへ戻す
+      const prevScrollBehavior = document.documentElement.style.scrollBehavior;
+      document.documentElement.style.scrollBehavior = "auto";
+      window.scrollTo(0, 0);
+      document.documentElement.style.scrollBehavior = prevScrollBehavior;
+      if (lastFocusedBeforeKonami && typeof lastFocusedBeforeKonami.focus === "function") {
+        lastFocusedBeforeKonami.focus();
+      }
+      lastFocusedBeforeKonami = null;
+      konamiOpen = false;
+      konamiClosing = false;
+    };
+
+    if (konamiPrefersReducedMotion) {
+      finishClose();
+      return;
+    }
+
+    // 1. メッセージをふっと消す → 2. 破片が逆再生で集まって画面を覆う → 3. 実ページを見せる
+    konamiEgg.classList.add("is-closing");
+    window.setTimeout(() => {
+      buildKonamiShards(true);
+      window.setTimeout(finishClose, KONAMI_SHATTER_MS + KONAMI_SHATTER_MAX_DELAY_MS + KONAMI_CLOSE_HOLD_MS);
+    }, KONAMI_CLOSE_FADE_MS);
+  }
+
+  window.addEventListener("keydown", (e) => {
+    if (konamiOpen) return;
+    const expected = KONAMI_SEQUENCE[konamiInputIndex];
+    if (e.code === expected) {
+      konamiInputIndex++;
+      if (konamiInputIndex === KONAMI_SEQUENCE.length) {
+        konamiInputIndex = 0;
+        openKonamiEgg();
+      }
+    } else {
+      konamiInputIndex = e.code === KONAMI_SEQUENCE[0] ? 1 : 0;
+    }
+  });
+
+  konamiRestoreBtn.addEventListener("click", closeKonamiEgg);
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && konamiOpen) closeKonamiEgg();
+  });
+}

@@ -1,3 +1,17 @@
+<!--
+  +---------------------------------------------------+
+  |  II   +----+                                      |
+  |       | ^  |                                      |
+  |  +----+----+----+                                 |
+  |  | <  |    |  >  |             +---+     +---+    |
+  |  +----+----+----+              | B |     | A |    |
+  |       | V  |                   +---+     +---+    |
+  |       +----+                                      |
+  +---------------------------------------------------+
+
+        懐かしのコマンド知ってる人は、ためしてみて。
+                 （キーボード推奨）
+-->
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -44,7 +58,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Barlow+Condensed:ital,wght@1,300;1,400;1,500&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Barlow+Condensed:ital,wght@1,300;1,400;1,500&family=Noto+Sans+JP:wght@400;500;700;900&family=Noto+Serif+JP:wght@500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
 <script type="application/ld+json">
 {
@@ -299,7 +313,7 @@
         <p class="profile__name reveal">福井 宏士 <span>Hiroshi Fukui</span></p>
         <p class="profile__body reveal">
           Web業界で15年以上の経験を持つ、ディレクター兼エンジニアです。<br>
-          ご相談から制作、その後の運用まで担当がコロコロ変わることなく、私が最後まで責任をもって直接サポートいたします。業種や規模に関わらず、「頼んでよかった」と思っていただける丁寧なモノづくりを心がけています。<br>
+          ご相談から制作、その後の運用まで担当がコロコロ変わることなく、私が最後まで責任をもって直接サポートいたします。業種や規模に関わらず、「頼んでよかった」と思っていただける丁寧な仕事を心がけています。<br>
           休日は個人開発やギターを楽しんだり、妻と2人の子どもと過ごしたり。まずはどんなことでも、お気軽にご相談ください。
         </p>
       </div>
@@ -853,6 +867,15 @@
   </div>
 </div>
 -->
+
+<!-- コナミコマンド（↑↑↓↓←→←→BA）入力で発火する隠し演出。ロジックはjs/main.js末尾のkonami関連ブロック参照 -->
+<div class="konami-egg" id="konamiEgg" role="dialog" aria-modal="true" aria-label="隠しメッセージ" hidden>
+  <div class="konami-egg__shards" id="konamiShards" aria-hidden="true"></div>
+  <div class="konami-egg__message">
+    <button type="button" class="konami-egg__restore" id="konamiRestore">元に戻す</button>
+    <p class="konami-egg__text">おもしろきこともなき世をおもしろく</p>
+  </div>
+</div>
 
 <script src="js/main.js"></script>
 <!-- FAQPage構造化データ：「よくあるご質問」セクション（事業会社様向け内容）と同じ内容を静的に埋め込み。
