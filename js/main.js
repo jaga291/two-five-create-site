@@ -820,7 +820,7 @@ if (konamiEgg && konamiShardsRoot && konamiRestoreBtn) {
     konamiTextEl.textContent = "";
     chars.forEach((ch, i) => {
       const span = document.createElement("span");
-      span.className = "konami-egg__char";
+      span.className = ch === "世" ? "konami-egg__char konami-egg__char--accent" : "konami-egg__char";
       span.textContent = ch;
       span.style.setProperty("--char-delay", i * KONAMI_CHAR_STAGGER_MS + "ms");
       konamiTextEl.appendChild(span);

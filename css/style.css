@@ -2415,6 +2415,9 @@ main.persona-transition { opacity: 0; transition: opacity 0.25s ease; }
   opacity: 0;
   transform: translateY(-0.6em);
 }
+.konami-egg__char--accent {
+  color: var(--yellow);
+}
 .konami-egg.is-revealed .konami-egg__char {
   animation: konamiCharIn 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
   animation-delay: var(--char-delay, 0s);
